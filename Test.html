@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社 - 倒叫後續理論</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 基本概念</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 1C - 1S; 2D</button>
+    <button class="tab-btn" onclick="showTab(2)">3. 1C - 1S; 2H</button>
+    <button class="tab-btn" onclick="showTab(3)">4. 1C - 1H; 2D</button>
+    <button class="tab-btn" onclick="showTab(4)">5. 1D - 1S; 2H</button>
+</nav>
+
+<!-- Tab 0: 基本概念 -->
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>倒叫後續 (Reverse Continuation)</h2>
+        <p>基本概念：當開叫者進行<span class="highlight">倒叫 (Reverse)</span> 後，因為空間被嚴重壓縮，我們需要一套簡潔明瞭的系統來區分弱牌與強牌。</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>💡 核心黃金法則</h3>
+                <p>在所有倒叫後續的序列中，我們使用以下規則來判斷弱牌：</p>
+                <p class="highlight" style="font-size: 1.2rem; text-align: center; background: rgba(250, 196, 0, 0.1); padding: 15px; border-radius: 8px; border: 1px dashed var(--accent);">
+                    「只有 4th Suit (第四門花色) 與 2NT 中，較低的那個叫品為不受邀 (NF / 弱牌)；另一個則固定作為 Waiting (等待/邀請+) 叫品。」
+                </p>
+            </div>
+            
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>為什麼需要這個規則？</h3>
+                <ul>
+                    <li><strong>避免爆牌：</strong> 倒叫已經逼叫到二階甚至三階，若不規定一個最便宜的叫品作為「弱牌逃跑出口」，答叫者低點力時很容易被迫叫到成局而爆牌。</li>
+                    <li><strong>釋放空間：</strong> 將「最低的那個叫品」規定為唯一的弱牌後，其他所有叫品都能保留為<span class="highlight">建設性/邀請以上</span>的強叫牌，把牌交代得更清楚！</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-actions" style="margin-top: 40px; padding: 20px 0;">
+            <span></span>
+            <button class="btn-next" onclick="showTab(1)">下一頁：牌例一 1C - 1S; 2D →</button>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 1: 1C - 1S; 2D 後續 -->
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>進程：1♣ – 1♠; 2♦ – ?</h2>
+        <p>開叫者倒叫 <span class="badge">2♦</span>。此時未叫的第四門花色為 <span class="badge" style="background: #ef4444;">2♥</span>。比較 <span class="highlight">2♥</span> 與 <span class="highlight">2NT</span> 的高低：</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>🚫 唯一弱牌 (不受邀)</h3>
+                <p>因為 <span class="highlight">2♥</span> 比 2NT 便宜：</p>
+                <ul>
+                    <li><span class="badge">2♥</span> = <span class="highlight">不受邀 (NF)</span> —— 第四門花色為最便宜的弱牌逃跑出口。</li>
+                </ul>
+            </div>
+            
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>⏳ 建設性與等待叫 (邀請+)</h3>
+                <ul>
+                    <li><span class="badge">2NT</span> = <strong>Waiting</strong> —— 建設性等待叫，有邀請以上力量。</li>
+                    <li><span class="badge">2♠</span> = <strong>5+張 ♠</strong> —— 五張以上黑桃自叫。</li>
+                    <li><span class="badge">3♣</span> = <strong>fit ♣</strong> —— 支持同伴的第一門梅花。</li>
+                    <li><span class="badge">3♦</span> = <strong>fit ♦</strong> —— 支持同伴的第二門方塊。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-actions" style="margin-top: 40px; padding: 20px 0;">
+            <button class="btn-back-lobby" style="position: static;" onclick="showTab(0)">← 上一頁</button>
+            <button class="btn-next" onclick="showTab(2)">下一頁：牌例二 1C - 1S; 2H →</button>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 2: 1C - 1S; 2H 後續 -->
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>進程：1♣ – 1♠; 2♥ – ?</h2>
+        <p>開叫者倒叫 <span class="badge">2♥</span>。此時未叫的第四門方塊落在 <span class="badge" style="background: #3b82f6;">3♦</span>。比較 <span class="highlight">3♦</span> 與 <span class="highlight">2NT</span> 的高低：</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>🚫 唯一弱牌 (不受邀)</h3>
+                <p>因為 <span class="highlight">2NT</span> 比 3♦ 便宜：</p>
+                <ul>
+                    <li><span class="badge">2NT</span> = <span class="highlight">不受邀 (NF)</span> —— 此時 2NT 變成了最便宜的弱牌逃跑出口。</li>
+                </ul>
+            </div>
+            
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>⏳ 建設性與等待叫 (邀請+)</h3>
+                <ul>
+                    <li><span class="badge">3♦!</span> = <strong>Waiting</strong> —— 第四門花色，此時作為建設性等待叫。</li>
+                    <li><span class="badge">2♠</span> = <strong>5+張 ♠</strong> —— 五張以上黑桃自叫。</li>
+                    <li><span class="badge">3♣</span> = <strong>fit ♣</strong> —— 支持同伴的梅花。</li>
+                    <li><span class="badge">3♥</span> = <strong>fit ♥</strong> —— 支持同伴的紅心。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-actions" style="margin-top: 40px; padding: 20px 0;">
+            <button class="btn-back-lobby" style="position: static;" onclick="showTab(1)">← 上一頁</button>
+            <button class="btn-next" onclick="showTab(3)">下一頁：牌例三 1C - 1H; 2D →</button>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 3: 1C - 1H; 2D 後續 -->
+<div id="tab-3" class="tab-content">
+    <div class="theory-layout">
+        <h2>進程：1♣ – 1♥; 2♦ – ?</h2>
+        <p>開叫者倒叫 <span class="badge">2♦</span>。此時未叫的第四門花色為 <span class="badge" style="background: #10b981;">2♠</span>。比較 <span class="highlight">2♠</span> 與 <span class="highlight">2NT</span> 的高低：</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>🚫 唯一弱牌 (不受邀)</h3>
+                <p>因為 <span class="highlight">2♠</span> 比 2NT 便宜：</p>
+                <ul>
+                    <li><span class="badge">2♠</span> = <span class="highlight">不受邀 (NF)</span> —— 第四門花色為最便宜的弱牌逃跑出口。</li>
+                </ul>
+            </div>
+            
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>⏳ 建設性與等待叫 (邀請+)</h3>
+                <ul>
+                    <li><span class="badge">2NT</span> = <strong>Waiting</strong> —— 建設性等待叫，有邀請以上力量。</li>
+                    <li><span class="badge">2♥</span> = <strong>5+張 ♥</strong> —— 五張以上紅心自叫。</li>
+                    <li><span class="badge">3♣</span> = <strong>fit ♣</strong> —— 支持同伴的梅花。</li>
+                    <li><span class="badge">3♦</span> = <strong>fit ♦</strong> —— 支持同伴的方塊。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-actions" style="margin-top: 40px; padding: 20px 0;">
+            <button class="btn-back-lobby" style="position: static;" onclick="showTab(2)">← 上一頁</button>
+            <button class="btn-next" onclick="showTab(4)">下一頁：牌例四 1D - 1S; 2H →</button>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 4: 1D - 1S; 2H 後續 -->
+<div id="tab-4" class="tab-content">
+    <div class="theory-layout">
+        <h2>進程：1♦ – 1♠; 2♥ – ?</h2>
+        <p>開叫者倒叫 <span class="badge">2♥</span>。此時未叫的第四門梅花落在 <span class="badge" style="background: #3b82f6;">3♣</span>。比較 <span class="highlight">3♣</span> 與 <span class="highlight">2NT</span> 的高低：</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>🚫 唯一弱牌 (不受邀)</h3>
+                <p>因為 <span class="highlight">2NT</span> 比 3♣ 便宜：</p>
+                <ul>
+                    <li><span class="badge">2NT</span> = <span class="highlight">不受邀 (NF)</span> —— 此時 2NT 變成了最便宜的弱牌逃跑出口。</li>
+                </ul>
+            </div>
+            
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>⏳ 建設性與等待叫 (邀請+)</h3>
+                <ul>
+                    <li><span class="badge">3♣</span> = <strong>Waiting</strong> —— 第四門花色，此時作為建設性等待叫。</li>
+                    <li><span class="badge">2♠</span> = <strong>5+張 ♠</strong> —— 五張以上黑桃自叫。</li>
+                    <li><span class="badge">3♦</span> = <strong>fit ♦</strong> —— 支持同伴的方塊。</li>
+                    <li><span class="badge">3♥</span> = <strong>fit ♥</strong> —— 支持同伴的紅心。</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

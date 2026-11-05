@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 基本概念</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 1S - 1N 後續</button>
+    <button class="tab-btn" onclick="showTab(2)">3. 1H - 1N 後續</button>
+    <button class="tab-btn" onclick="showTab(3)">4. 答叫者再叫 (2X後)</button>
+    <button class="tab-btn" onclick="showTab(4)">5. 特殊發展</button>
+</nav>
+
+<!-- Tab 0: 基本概念 -->
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>Forcing 1NT (迫叫 1NT)</h2>
+        <p>基本概念：<span class="highlight">1M – 1N! = F1 (迫叫一圈)</span>。若為 passed hand，則視為半迫叫 (開叫的人不一定要答叫)。</p>
+        
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>使用時機</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li>1. 不能 Game forcing <span class="highlight">(不足二蓋一點力)</span></li>
+                    <li>2. 不能簡單加叫同伴高花 <span class="highlight">[1M - 2M = 3+M fit, 8~bad10]</span></li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>答叫 1N 可能的牌</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li>1. <span class="highlight">沒有高花配合</span>的任何不足 GF 的牌</li>
+                    <li>2. <span class="highlight">有高花配合</span>，但屬於最低限 (不會受邀) 或只有邀請點力的牌</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 1: 1S - 1N 後續 -->
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>1S – 1N; ? 開叫者再叫</h2>
+        <p>當答叫者使用 Forcing 1NT 回應 1S 開叫後，開叫者的精確再叫定義：</p>
+        
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>低階與成局以下再叫</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2m</span> = 3+張m, 12~18點, <span class="highlight">NF</span></li>
+                    <li><span class="badge">2♥</span> = 4+張H, 12~18點, <span class="highlight">NF</span></li>
+                    <li><span class="badge">2♠ / 3♠</span> = 6+張S, 12~15點 / 16~18點</li>
+                    <li><span class="badge">2NT / 3NT</span> = BAL, 18~19點 / 20~21點 <span class="highlight">[5332]</span></li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>強牌與特殊高階再叫</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">3m / ♥</span> = S + m 加起來 9 張 / 4+張H, 19~21點</li>
+                    <li><span class="badge">4X</span> = 8.5 winners, X short (短門)</li>
+                    <li><span class="badge">4♠</span> = 8 winners with defense tricks</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 2: 1H - 1N 後續 -->
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>1H – 1N; ? 開叫者再叫</h2>
+        <p>當答叫者使用 Forcing 1NT 回應 1H 開叫後，開叫者的特殊再叫定義：</p>
+
+        <div class="rule-card" style="border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); padding: 20px; border-radius: 12px;">
+            <div class="info-grid">
+                <div class="info-box">
+                    <p><span class="badge">2♣</span> = 可能是 4522 牌型</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="badge">2♠</span> = 4+張S, 19~21點</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="badge">3♠</span> = 8.5 winners, S short (黑桃短門)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 3: 答叫者再叫 (2X後) -->
+<div id="tab-3" class="tab-content">
+    <div class="theory-layout">
+        <h2>1M – 1N; 2X – ? 答叫者第二轉</h2>
+        <p>在開叫者再叫 2X 後，答叫者需根據「是否有 3 張高花配合」及「點力」來做決策：</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>有 3M 配合 (有配合)</h3>
+                <p><span class="highlight">6~7 點：</span> 1M - 1N; 2X - <span class="badge">2M</span></p>
+                <p><span class="highlight">10~11 點：</span> 1M - 1N; 2X - <span class="badge">3M</span> (3M 保證配合)</p>
+            </div>
+            
+            <div class="info-box" style="border-top-color: #fac400;">
+                <h3>無 3M 配合 (無配合)</h3>
+                <p><span class="highlight">6~7 點：</span> 1M - 1N; 2X - <span class="badge">Pass / 2M</span> (沒有局；2M 只保證兩張)</p>
+                <p><span class="highlight">8~10 點：</span> 1M - 1N; 2X - <span class="badge">2M / 3X</span></p>
+                <p><small>※ 3X = 保護叫。8~10點會受邀，不能 Pass 同伴，故需要保護同伴的邀請牌。</small></p>
+                <p><span class="highlight">11~12 點：</span> 1M - 1N; 2X - <span class="badge">2NT</span></p>
+            </div>
+            
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>介紹新花</h3>
+                <p><span class="highlight">6~10 點：</span> 1M - 1N; 2X - <span class="badge">2Y</span> (2Y = 5+張Y, NF, 找合約)</p>
+                <p><span class="highlight">10~12 點：</span> 1M - 1N; 2X - <span class="badge">3Y (Y>X)</span> (跳叫 3Y = 6+張Y, inv, NF)</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 4: 特殊發展 -->
+<div id="tab-4" class="tab-content">
+    <div class="theory-layout">
+        <h2>1M – 1N; 2X – ? 特殊發展 (Cont'd)</h2>
+        <p>進階的後續叫牌序列與特殊含義：</p>
+
+        <div class="rule-card" style="border-left-color: #3e52b8; background: rgba(62, 82, 184, 0.05); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+            <h3>1H 開叫的低花配合與邀請</h3>
+            <p>進程：<strong>1♥ – 1N; 2m – ?</strong></p>
+            <div class="info-grid">
+                <div class="info-box">
+                    <p><span class="badge">2♠!</span> = m fit, inv (配合低花，邀請)</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="badge">2NT</span> = no m fit, inv (無低花配合，邀請)</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="badge">3m</span> = m fit, 保護叫</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rule-card" style="border-left-color: var(--accent); background: rgba(250, 196, 0, 0.05); padding: 20px; border-radius: 12px;">
+            <h3>開叫者的三次叫牌 (邀請)</h3>
+            <p>進程：<strong>1M – 1N; 2m – 2M; ?</strong></p>
+            <div class="info-grid">
+                <div class="info-box">
+                    <p><span class="badge">2NT</span> = only 5張M, 16~18點 (inv)</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="badge">3M</span> = 6張M + 4張m, 16~18點 (inv)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

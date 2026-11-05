@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/setting.css">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #fac400;
+            --text: #f8fafc;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+<div class="settings-container">
+    <h1>工具箱</h1>
+
+    <div class="tool-group">
+        <span class="tool-label">系統操作</span>
+        <button class="btn btn-input" onclick="window.location.href='cardinput.html'">
+            🃏 前往手牌輸入頁
+        </button>
+        <button class="btn btn-reset" onclick="clearAllData()">
+            🗑️ 清除所有暫存
+        </button>
+    </div>
+    <button class="btn" onclick="location.href='lobby.html'">
+            回到大廳
+    </button>
+</div>
+
+<script>
+    // 1. 取得牌局邏輯：讀取 JSON 並存入快取
+    function importGame(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = JSON.parse(e.target.result);
+                
+                // 檢查是否包含手牌資料
+                if (data.hands || data.north) {
+                    const handsToStore = data.hands ? data.hands : data;
+                    localStorage.setItem('advance_hands', JSON.stringify(handsToStore));
+                    
+                    document.getElementById('import-status').style.display = 'block';
+                    setTimeout(() => {
+                        if(confirm("牌局載入成功！要直接前往叫牌練習嗎？")) {
+                            window.location.href = 'biddinginput.html';
+                        }
+                    }, 500);
+                } else {
+                    alert("檔案格式不符，請確保 JSON 包含手牌資料。");
+                }
+            } catch (err) {
+                alert("解析失敗：請上傳正確的 JSON 檔案。");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // 2. 清除所有暫存
+    function clearAllData() {
+        if (confirm("確定要清除所有暫存的手牌與叫牌紀錄嗎？")) {
+            localStorage.removeItem('advance_hands');
+            alert("清理完成。");
+            location.reload();
+        }
+    }
+</script>
+
+</body>
+</html>

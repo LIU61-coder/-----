@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 強度分類</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 2♣ 路徑</button>
+    <button class="tab-btn" onclick="showTab(2)">3. 直接叫牌</button>
+    <button class="tab-btn" onclick="showTab(3)">4. 1♣ 後續</button>
+    <button class="tab-btn" onclick="showTab(4)">5. 1♦ 後續</button>
+    <button class="tab-btn" onclick="showTab(5)">6. 2NT Relay</button>
+</nav>
+
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>1m - 1M - 1NT 強度分類</h2>
+        <p>目的在找尋最好的合約。因為同伴點力牌型都很限定，可以把自己的牌做一些強度分類：</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #94a3b8;">
+                <h3>1. 只有 partial 合約</h3>
+                <p>看 <span class="highlight">1N / 2D / 2M / 3C</span> 哪個好就選哪個。</p>
+            </div>
+            <div class="info-box" style="border-top-color: #fac400;">
+                <h3>2. 只有邀請的力量</h3>
+                <p>分為 <span class="highlight">6M / 5M / bal / 5-4M / 5-5M</span> 邀請。</p>
+            </div>
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>3. 只有 game 的力量</h3>
+                <p>找王牌配合或是打 <span class="highlight">3N</span>。</p>
+            </div>
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>4. 有滿貫興趣</h3>
+                <p>找王牌配合或是詢問自己需要的東西。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>2♣  (叫同伴轉換 2D)</h2>
+        <p>基本概念：<span class="highlight">經過 2C! - 2D! 的過程比較弱。</span></p>
+        <p>開叫過程：<strong>1m - 1S ; 1N - 2C! ; 2D! - ?</strong></p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #94a3b8;">
+                <h3>弱牌止叫 (S/O)</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">Pass</span> = D (留在 2♦ 合約)</li>
+                    <li><span class="badge">2♥</span> = 5-4+, S/O</li>
+                    <li><span class="badge">2♠</span> = 5+S, S/O</li>
+                </ul>
+            </div>
+            <div class="info-box" style="border-top-color: #fac400;">
+                <h3>邀請力量 (INV)</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2NT</span> = inv</li>
+                    <li><span class="badge">3X</span> = 5-5, inv</li>
+                    <li><span class="badge">3♠</span> = 6+S, inv</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>直接叫牌路徑</h2>
+        <p>不經過 2C!，在 1NT 後直接叫牌，代表更積極的牌力：</p>
+        <p>開叫過程：<strong>1m - 1S ; 1N - ?</strong></p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>迫叫成局 (FG)</h3>
+                <p><span class="badge" style="background: #4ade80; color: #000; font-size: 1.2rem;">2♦!</span> = FG</p>
+                <p>直接叫 2D! 是強迫成局，要求同伴繼續描述牌型。</p>
+            </div>
+            <div class="info-box" style="border-top-color: #fac400;">
+                <h3>特定牌型邀請 (INV)</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2♥</span> = only 5-4, inv</li>
+                    <li><span class="badge">2♠</span> = only 5S, inv</li>
+                </ul>
+            </div>
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>滿貫試探與特殊 (ST)</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2NT!</span> = puppet to 3C</li>
+                    <li><span class="badge">3X</span> = 5-5, ST</li>
+                    <li><span class="badge">3♠</span> = 6+S, ST</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-3" class="tab-content">
+    <div class="theory-layout">
+        <h2>1♣ - 1♠ 後續回答 (面對 2♦! FG)</h2>
+        <p>當答叫者直接叫出 <span class="highlight">2♦! (FG)</span> 時，開叫者的牌型回報：</p>
+
+        <div class="rule-card" style="border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); padding: 25px; border-radius: 12px; margin-bottom: 25px;">
+            <h3>1♣ - 1♠ ; 1N - 2D! ; ?</h3>
+            <ul style="list-style: none; padding-left: 0; font-size: 1.1rem; line-height: 2;">
+                <li><span class="badge">2♥</span> = 4H but <span class="highlight" style="color: #ef4444;">no 3S</span></li>
+                <li><span class="badge">2♠</span> = 3S except 3334</li>
+                <li><span class="badge" style="background: #ef4444;">2NT</span> = <span class="highlight" style="color: #ef4444;">3334</span></li>
+                <li><span class="badge">3♣</span> = 5C, no 3S [2335]</li>
+                <li><span class="badge">3♦</span> = 4D, no 3S [2245 / 1345] (5C)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="tab-4" class="tab-content">
+    <div class="theory-layout">
+        <h2>1♦ - 1♠ 後續回答 (面對 2♦! FG)</h2>
+        <p>與 1♣ 開叫相似，但在低花的分配上會有些微不同：</p>
+
+        <div class="rule-card" style="border-left-color: #fac400; background: rgba(250, 196, 0, 0.05); padding: 25px; border-radius: 12px; margin-bottom: 25px;">
+            <h3>1♦ - 1♠ ; 1N - 2D! ; ?</h3>
+            <ul style="list-style: none; padding-left: 0; font-size: 1.1rem; line-height: 2;">
+                <li><span class="badge">2♥</span> = 4H but <span class="highlight" style="color: #ef4444;">no 3S</span></li>
+                <li><span class="badge">2♠</span> = 3S except 3343</li>
+                <li><span class="badge" style="background: #ef4444;">2NT</span> = <span class="highlight" style="color: #ef4444;">3343</span></li>
+                <li><span class="badge">3♣</span> = 4C, no 3S [2344 / 2254 / 1354]</li>
+                <li><span class="badge">3♦</span> = 5D, no 3S [2353]</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="tab-5" class="tab-content">
+    <div class="theory-layout">
+        <h2>進階 2NT Relay 與報控</h2>
+        <p>1m - 1S ; 1N - 2D! ; 開叫者回答 2H/2S/2N/3C/3D 之後，答叫者可以：</p>
+
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #fac400;">
+                <h3>1. 叫 2NT = Relay</h3>
+                <p>要求同伴繼續表示牌型：</p>
+                <p><span class="badge">3m</span> = 5+m</p>
+                <p><span class="badge" style="background: #ef4444;">3om</span> = <span class="highlight" style="color: #ef4444;">44+ / 43+</span></p>
+            </div>
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>2. 叫花色 = 確立王牌</h3>
+                <p><span class="highlight" style="color: #ef4444;">以這個花色作為王牌</span>，同伴的再叫轉為報控（Cue-bid）。</p>
+            </div>
+        </div>
+
+        <div class="rule-card" style="border-left-color: #3b82f6; background: rgba(59, 130, 246, 0.05); padding: 20px; border-radius: 12px; margin-top: 25px;">
+            <h3>實戰範例推演</h3>
+            
+            <p><strong>1C - 1S ; 1N - 2D ; 2H - 2N ; ?</strong></p>
+            <ul style="list-style: none; padding-left: 0; margin-bottom: 20px;">
+                <li><span class="badge">3♣</span> = 1435 / 2425</li>
+                <li><span class="badge">3♦</span> = 2434</li>
+            </ul>
+
+            <p><strong>1C - 1S ; 1N - 2D ; 2S - 2N ; ?</strong></p>
+            <ul style="list-style: none; padding-left: 0;">
+                <li><span class="badge">3♣</span> = 3235 / 3325</li>
+                <li><span class="badge">3♦</span> = 3145 <span style="color: #94a3b8; font-size: 0.9em;">(3334 is denied for 2S)</span></li>
+                <li><span class="badge">3♥</span> = 4H</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

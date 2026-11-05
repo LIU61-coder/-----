@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 1H - 2H 架構</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 1H - 2H 轉移後續</button>
+    <button class="tab-btn" onclick="showTab(2)">3. 1S - 2S 架構</button>
+    <button class="tab-btn" onclick="showTab(3)">4. 1S - 2S 轉移後續</button>
+</nav>
+
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>1H - 2H 支持後的後續發展</h2>
+        <p>基本概念：<span class="highlight">加一邀請，三短四長</span>。當答叫者加叫 2H（表示 3+張H配合，8~10⁻ 點）後，開叫者的再叫定義：</p>
+        
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>邀請與短門描述</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2♠!</span> = <strong>trans 2NT</strong> (轉移至 2NT，進一步詢問)</li>
+                    <li><span class="badge">2NT / 3m</span> = <strong>short in S / m</strong>，點力 <span class="highlight">inv+</span></li>
+                    <li><span class="badge">3♥</span> = <strong>5+張H</strong>，點力 <span class="highlight">inv</span> (純邀請)</li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>滿貫試探與成局</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">3♠</span> = <strong>6H + 5S</strong>，滿貫試探 (<span class="highlight">ST</span>)</li>
+                    <li><span class="badge">3NT</span> = <strong>to play</strong> (終點止叫於 3NT)</li>
+                    <li><span class="badge">4m</span> = <strong>5H + 5m</strong>，滿貫試探 (<span class="highlight">ST</span>)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>1H – 2H; 2♠ – 2NT; ? 轉移後的精細發展</h2>
+        <p>當開叫者再叫 2♠! 迫使答叫者接叫 2NT 後，開叫者可以進一步描述手牌結構，展開更精確的邀請或滿貫試探：</p>
+
+        <div class="rule-card" style="border-left-color: var(--accent); background: rgba(250, 196, 0, 0.05); padding: 20px; border-radius: 12px;">
+            <h3>開叫者（Opener）的精確再叫：</h3>
+            <div class="info-grid">
+                <div class="info-box">
+                    <p><span class="badge">3m</span> = <strong>4+張m</strong>，點力 <span class="highlight">inv+</span></p>
+                    <p><span class="badge">3♥</span> = <strong>4+張S</strong>，點力 <span class="highlight">inv</span></p>
+                </div>
+                <div class="info-box">
+                    <p><span class="badge">3♠</span> = <strong>cue bid</strong>，滿貫試探 (<span class="highlight">ST</span>)</p>
+                    <p><span class="badge">3NT</span> = <strong>waiting</strong>，滿貫試探 (<span class="highlight">ST</span>)</p>
+                    <p><span class="badge">4m</span> = <strong>cue bid</strong>，滿貫試探 (<span class="highlight">ST</span>)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>1S - 2S 支持後的後續發展</h2>
+        <p>基本概念：<span class="highlight">加一邀請，三短四長</span>。當答叫者加叫 2S（表示 3+張S配合，8~10⁻ 點）後，開叫者的再叫定義：</p>
+        
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>邀請與短門描述</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2NT!</span> = <strong>trans 3♣</strong> (轉移至 3♣，進一步詢問)</li>
+                    <li><span class="badge">3m / H</span> = <strong>short</strong>，點力 <span class="highlight">inv+</span> (持有該花色短門)</li>
+                    <li><span class="badge">3♠</span> = <strong>5+張S</strong>，點力 <span class="highlight">inv</span> (純邀請)</li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>滿貫試探與成局</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">3NT</span> = <strong>to play</strong> (終點止叫於 3NT)</li>
+                    <li><span class="badge">4m / H</span> = <strong>5-5 分配</strong>，滿貫試探 (<span class="highlight">ST</span>)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-3" class="tab-content">
+    <div class="theory-layout">
+        <h2>1S – 2S; 2NT – 3♣; ? 轉移後的精細發展</h2>
+        <p>當開叫者再叫 2NT! 迫使答叫者接叫 3♣ 後，開叫者可以進一步描述手牌結構，展開更精確的邀請或滿貫試探：</p>
+
+        <div class="rule-card" style="border-left-color: var(--accent); background: rgba(250, 196, 0, 0.05); padding: 20px; border-radius: 12px;">
+            <h3>開叫者（Opener）的精確再叫：</h3>
+            <div class="info-grid">
+                <div class="info-box">
+                    <p><span class="badge">3♦ / H</span> = <strong>4+張♦ / 4+張H</strong>，點力 <span class="highlight">inv+</span></p>
+                    <p><span class="badge">3♠</span> = <strong>4+張♣</strong>，點力 <span class="highlight">inv</span></p>
+                </div>
+                <div class="info-box">
+                    <p><span class="badge">3NT</span> = <strong>waiting</strong>，滿貫試探 (<span class="highlight">ST</span>)</p>
+                    <p><span class="badge">4m / H</span> = <strong>cue bid</strong>，滿貫試探 (<span class="highlight">ST</span>)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

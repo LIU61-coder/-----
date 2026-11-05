@@ -1,0 +1,73 @@
+.status-btn {
+    position: relative;
+    width: var(--btn-w);
+    height: var(--btn-h);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
+}
+
+.status-btn:active {
+    transform: scale(0.95);
+}
+
+.label-box {
+    background-color: white;
+    width: 85%;
+    height: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+}
+
+.text {
+    font-weight: 900;
+    font-size: var(--font-main);
+    letter-spacing: 4px;
+}
+
+.status-btn::after {
+    content: attr(data-tab);
+    position: absolute;
+    top: var(--tab-top);
+    width: 40%;
+    height: 25%;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-tab);
+    font-weight: bold;
+    z-index: -1;
+}
+
+.btn-pass { background: var(--green-bg); }
+.btn-pass .text { color: #028345; }
+.btn-pass::after {
+    background-color: #a5d6a7;
+    color: #028345;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.btn-xx { background: var(--blue-bg); }
+.btn-xx .text { color: #0c2b8a; }
+.btn-xx::after {
+    background-color: #c5cae9;
+    color: #0c2b8a;
+    left: 10%;
+}
+
+.btn-x { background: var(--red-bg); }
+.btn-x .text { color: #b01a1a; }
+.btn-x::after {
+    background-color: #ffcdd2;
+    color: #b01a1a;
+    right: 10%;
+}

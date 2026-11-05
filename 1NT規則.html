@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 什麼是 1NT</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 平均牌型定義</button>
+    <button class="tab-btn" onclick="showTab(2)">3. 止張的概念</button>
+    <button class="tab-btn" onclick="showTab(3)">4. 答叫者的決策</button>
+    <button class="tab-btn" onclick="showTab(4)">5. 1NT後續工具</button>
+    <button class="tab-btn" onclick="showTab(5)">6. Stayman</button>
+    <button class="tab-btn" onclick="showTab(6)">7. 轉換</button>
+</nav>
+
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>1NT 強開牌:</h2>
+        <p>1NT 是橋牌中最具描述性的叫品。當你開叫 1NT，同伴瞬間就能掌握你 <span class="highlight">90%</span> 的牌力與牌型資訊。</p>
+        
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>精確點數範圍</h3>
+                <p>大牌點 (HCP) 必須剛好為：</p>
+                <div style="font-size: 2.5rem; text-align: center; margin: 20px 0;" class="highlight">15 - 17</div>
+                <p>多一點或少一點都不行，這是為了讓同伴精確計算成局點數。</p>
+            </div>
+            <div class="info-box">
+                <h3>無王的概念</h3>
+                <p>「無王」代表這門合約沒有王牌，完全憑藉大牌實力與長門贏墩。因此，這是一個 <span class="highlight">穩定但誠實</span> 的叫品。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>什麼是「平均牌型」？</h2>
+        <p>1NT 開叫的前提是手牌分佈必須非常平衡，不能有單張或缺門。</p>
+        <div class="info-box">
+            <h3>標準平均牌型</h3>
+            <ul>
+                <li><span class="pattern-badge">4-3-3-3</span> 最平均的牌型。</li>
+                <li><span class="pattern-badge">4-4-3-2</span> 只有一個雙張。</li>
+                <li><span class="pattern-badge">5-3-3-2</span> 五張通常是低花。</li>
+            </ul>
+            <p><span class="badge" style="background: #ef4444;">絕對禁止</span> 手中持有任何 <span class="highlight">單張 (Singular)</span> 或 <span class="highlight">缺門 (Void)</span>，我們社團也禁止<span class="highlight">五張高花</span>。</p>
+        </div>
+    </div>
+</div>
+
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>止張 (Stoppers) 的重要性</h2>
+        <p>在無王合約中，對手會試圖攻攻他們最長的花色。你必須在各門花色都有保護措施。</p>
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>什麼是檔張？</h3>
+                <p>擁有 <span class="highlight">A、Kx、Qxx</span> 或 <span class="highlight">Jxxx</span>，能夠阻止對手一次就把這門吃完。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-3" class="tab-content">
+    <div class="theory-layout">
+        <h2>計算成局</h2>
+        <p>當同伴開叫 1NT (15-17)，答叫者須負責計算總點數是否達到 <span class="highlight">25 點</span>。</p>
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #94a3b8;">
+                <h3>0 - 8 點：NF</h3>
+                <p>點數不足以成局。選擇 <span class="highlight">Pass</span>，假如有五張高花記得轉換。</p>
+            </div>
+            <div class="info-box" style="border-top-color: #fac400;">
+                <h3> 9 點：INV</h3>
+                <p>成局邊緣。叫出 <span class="highlight">2NT or(INV)</span>，詢問同伴：如果你是 16 點就去Game，如果是 15 點就 Pass。</p>
+            </div>
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>10+ 點：GF</h3>
+                <p>直接叫出 <span class="highlight">3NT (Game)</span>。因為 15 + 10 = 25，已經達到成局門檻。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-4" class="tab-content">
+    <div class="theory-layout">
+        <h2>1NT 後續工具</h2>
+        <p><del>雖然 3NT 很舒服</del>，有時候我們還是想打「高花配合」，這時需要特約工具：</p>
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>Stayman (史台曼)</h3>
+                <p>答叫 <span class="highlight">2♣</span>，詢問同伴有沒有 4 張高花。</p>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2♦</span> 無 4 張高花</li>
+                    <li><span class="badge">2♥</span> 4+張紅心 (可能也有黑桃)</li>
+                    <li><span class="badge">2♠</span> 4+張黑桃 (保證無紅心)</li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>Transfer (轉移叫)</h3>
+                <p>答叫 <span class="highlight">2♦/2♥</span>，強迫同伴叫出高花，讓強牌端處在莊家位置。</p>
+                <p>優點：有時能避免同伴打不好的 1NT，<span>所以一定要轉換</span>。</p>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="highlight">1NT - 2♦</span> ➔ 同伴必叫 <span class="highlight">2♥</span></li>
+                    <li><span class="highlight">1NT - 2♥</span> ➔ 同伴必叫 <span class="highlight">2♠</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-5" class="tab-content">
+    <div class="theory-layout">
+        <h2>Stayman 進階後續：尋找最佳合約</h2>
+        <p>當你發動 Stayman (2♣) 後，必須根據開叫者的回答做出精確的二次叫牌：</p>
+
+        <div class="rule-card" style="border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+            <h3>情況 A：1NT - 2♣ ; 2♦ - ?</h3>
+            <p>當同伴說他「沒有高花」時，如果你持有 <span class="highlight">5-4 高花</span>，這是最後的掙扎：</p>
+            <div class="info-grid">
+                <div class="info-box">
+                    <span class="badge" style="background: #fac400; color: #000;">Smolen 概念</span>
+                    <p><span class="highlight">2♥ / 3♥：</span> 5張♠ + 4張♥ (INV/GF)</p>
+                    <p><span class="highlight">2♠ / 3♠：</span> 5張♥ + 4張♠ (INV/GF)</p>
+                    <p><small>※ 秘訣：叫出你「四張」的那門，讓同伴如果有三張另一門長花可以定莊。</small></p>
+                </div>
+                <div class="info-box">
+                    <span class="badge">大滿貫/特殊跳叫</span>
+                    <p><span class="highlight">4♦：</span> 轉移 6張♥ + 4張♠</p>
+                    <p><span class="highlight">4♥：</span> 轉移 6張♠ + 4張♥</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rule-card" style="border-left-color: #e84c3d; background: rgba(232, 76, 61, 0.05); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+            <h3>情況 B：1NT - 2♣ ; 2♥ - ?</h3>
+            <div class="info-grid">
+                <div class="info-box">
+                    <p><span class="highlight">2NT：</span> 8-9點 INV。邀請同伴有4張♥就上4♥，否則留3NT。</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="highlight">3♥：</span> 8-9點 INV。確定有♥配合，邀請上4♥。</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="highlight">3NT：</span> 10-12點 GF。雖有4張♥，但可能偏向打無將。</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="highlight">4♥：</span> 10+點 GF。確定♥配合，直接封局。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rule-card" style="border-left-color: #3e52b8; background: rgba(62, 82, 184, 0.05); padding: 20px; border-radius: 12px;">
+            <h3>情況 C：1NT - 2♣ ; 2♠ - ?</h3>
+            <div class="info-grid">
+                <div class="info-box">
+                    <p><span class="highlight">2NT：</span> 8-9點 INV。詢問同伴對♠的配合度與點力。</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="highlight">3♠：</span> 8-9點 INV。♠配合，邀請上4♠。</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="highlight">4♠：</span> 10+點 GF。♠配合，直接封局。</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="highlight">3NT：</span> 10+點 GF。若你有4張♥但同伴回2♠，且你只有2-3張♠，則回歸3NT。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="tab-6" class="tab-content">
+    <div class="theory-layout">
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #fac400;">
+                <h3>5-5 高花：邀請 (INV)</h3>
+                <p><span class="highlight">邏輯：先轉低的，再叫高的</span></p>
+                <div class="rule-card" style="background: rgba(250, 196, 0, 0.05); padding: 10px; border-radius: 8px;">
+                    <p>1NT - 2♦ ; 2♥ - 2♠</p>
+                    <p><strong>2♠</strong> = 5張♥ + 5張♠，點力 INV</p>
+                </div>
+                <p><small>※ 讓同伴在兩門高花中選一門配合，不夠點就 Pass or 3♥ 或回 2NT。</small></p>
+            </div>
+
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>5-5 高花：迫叫成局 (FG)</h3>
+                <p><span class="highlight">邏輯：先轉高的，再叫低的</span></p>
+                <div class="rule-card" style="background: rgba(239, 68, 68, 0.05); padding: 10px; border-radius: 8px;">
+                    <p>1NT - 2♥ ; 2♠ - 3♥</p>
+                    <p><strong>3♥</strong> = 5張♠ + 5張♥，點力 FG</p>
+                </div>
+                <p><small>※ 因為叫到了 3 線，必須打到成局。</small></p>
+            </div>
+
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>6張以上長花：直接封局</h3>
+                <p><span class="highlight">1NT - 4♦/4♥ ➔ 4♥/4♠</span></p>
+                <p>如果你持有 6 張以上的高花且有點力，在轉移叫之後直接跳叫 4 線封局。</p>
+                <p><small>範例：1NT - 4♦ ; 4♥ (保證 6+張紅心)</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

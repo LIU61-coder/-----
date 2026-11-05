@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 開牌邏輯</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 點力與張數</button>
+    <button class="tab-btn" onclick="showTab(2)">3. 何謂成局(Game)</button>
+    <button class="tab-btn" onclick="showTab(3)">4. 如何答叫</button>
+    <button class="tab-btn" onclick="showTab(4)">5. 叫五四</button>
+</nav>
+
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>5533 自然制:</h2>
+        <p>叫牌是為了準確的告訴你同伴你拿什麼牌。<span class="highlight">5533</span> 是橋牌最通用的基礎規則：</p>
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>♠/♥ 高花開牌</h3>
+                <p>必須保證至少 <span class="highlight">5 張</span>。</p>
+                <ul>
+                    <li>目標是尋找<span class="highlight">「8張配合」</span>。</li>
+                    <li>通常有8張配合便可尋求王牌合約。</li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>♦/♣ 低花開牌</h3>
+                <p>當不符合高花條件時，只要有 <span class="highlight">3 張</span> 即可開牌。</p>
+                <ul>
+                    <li>當你沒有高花時那就開低花。</li>
+                    <li><span class="highlight">33</span>開梅花，<span class="highlight">44</span>開方塊，不然就開長的那門。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>點力限制</h2>
+        <div class="info-box">
+            <h3>大牌點要求 (HCP)</h3>
+            <p>標準開牌：<span class="highlight">12 - 21 點</span>。</p>
+            <p>這是根據統計學計算出，最有利你得到分數，假如沒有開叫點那可以<span>Pass</span>。</p>
+        </div>
+    </div>
+</div>
+
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>何謂成局 (Game)</h2>
+        <p>「成局」是橋牌得分的關鍵。若成功打活成局合約，會獲得額外的高額獎勵：<br>
+           <span class="badge">無身價 +250</span> <span class="badge">有身價 +450</span></p>
+        
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>成局合約與點力</h3>
+                <ul>
+                    <li><span class="highlight">3NT：</span> 大約 25 HCP</li>
+                    <li><span class="highlight">4♠/4♥：</span> 大約 24 HCP</li>
+                    <li><span class="highlight">5♦/5♣：</span> 大約 28 HCP</li>
+                </ul>
+                <p style="font-size: 0.9rem;">※ 優先度：<span class="highlight">4M > 3NT > 5m</span></p>
+            </div>
+            <div class="info-box">
+                <h3>王牌合約前提</h3>
+                <p>必須達到 <span class="highlight">8 張以上配合</span> 才會考慮打王牌合約，否則通常以 3NT 為目標。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-3" class="tab-content">
+    <div class="theory-layout">
+        <h2>如何答叫：</h2>
+        <p>當同伴開叫後，你需要跟他說你也有多少點、甚麼牌型。<br><span class="highlight">要記得：跳叫是邀請 (Invite)</span></p>
+        
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>同伴低花開牌 (1m)</h3>
+                <ul>
+                    <li><span class="highlight">1♠/1♥：</span> 4張以上 (只保證4張)叫2♠/2♥表示配合</li>
+                    <li><span class="highlight">1NT：</span> 6-9 點 (NF)</li>
+                    <li><span class="highlight">2m：</span> 4張支持, 6-9 點 (NF)</li>
+                    <li><span class="highlight">2NT：</span> 10-12 點 (INV)</li>
+                    <li><span class="highlight">3NT：</span> 13+ 點 (GF)</li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>同伴高花開牌 (1M)</h3>
+                <ul>
+                    <li><span class="highlight">1NT：</span> 6-9 點 (NF)</li>
+                    <li><span class="highlight">2M：</span> 3張支持, 6-9 點 (NF)</li>
+                    <li><span class="highlight">3M：</span> 3張支持, 10-12 點 (INV)</li>
+                    <li><span class="highlight">4M：</span> 3張支持, 13+ 點 (GF)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-4" class="tab-content">
+    <div class="theory-layout">
+        <h2>進階：叫 54 邏輯</h2>
+        <p>當同伴回 1NT，但你持有 5-4 分佈的手牌時該如何處理？</p>
+        <div class="info-box">
+            <h3>倒叫 (Reversals)</h3>
+            <p>記得一個道理：<span class="highlight">倒叫是邀請</span>。</p>
+            <p>例如：1♦ - 1♥ - 2♠。這展示了 ♦ 比 ♠ 長，且點力較強（16+）。</p>
+            <p>而1♠ - 1NT - 2♥。♥ 比 ♠低，所以NF(notForcing)</p>
+        </div>
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

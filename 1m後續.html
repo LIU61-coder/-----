@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 1♣ 開叫後續</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 1♦ 開叫後續</button>
+    <button class="tab-btn" onclick="showTab(2)">3. 1m - 1♠ 開叫方再叫</button>
+</nav>
+
+<!-- Tab 0: 1C 開叫一階答叫 -->
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>1♣ 開叫：一階答叫架構</h2>
+        <p>當同伴開叫 1♣ 後，答叫者的回應可以依據「牌型」與「點力」作以下系統性分類：</p>
+        
+        <div class="info-grid">
+            <!-- 均型區塊 -->
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>均型與無王 (BAL)</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">1NT</span> = 6~10點</li>
+                    <li><span class="badge">2NT</span> = 11~12點</li>
+                    <li><span class="badge">3NT</span> = <span class="highlight">3343</span> 牌型, 16~18點</li>
+                    <li><span class="badge">4NT</span> = <span class="highlight">3343</span> 牌型, 19~20點</li>
+                </ul>
+                <div class="rule-card" style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+                    <p style="margin: 0; font-size: 0.95rem;"><strong>思考題：持 3343 牌型，12~15點時怎麼叫？</strong></p>
+                    <p style="margin: 5px 0 0 0; font-size: 0.95rem; color: var(--accent);">答：先叫 1♦，隨後再叫 3NT。</p>
+                </div>
+            </div>
+
+            <!-- 自然與弱牌區塊 -->
+            <div class="info-box" style="border-top-color: #94a3b8;">
+                <h3>自然叫品與弱牌</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">1♦</span> = 5+張D, 6+點</li>
+                    <li><span class="badge">1M</span> = 4+張M, 6+點</li>
+                    <li><span class="badge">2M</span> = 6+張M, 5~7點 <small>(only 2/3)</small></li>
+                </ul>
+                <p style="font-size: 0.9rem; color: var(--text-dim); margin-top: 15px;">※ 2M 為弱牌阻擊，幫助確立牌型並干擾對手。</p>
+            </div>
+
+            <!-- 配合與強牌區塊 -->
+            <div class="info-box" style="border-top-color: var(--accent);">
+                <h3>梅花配合與特約</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2♣</span> = 4+張C, 13+點 <span class="highlight">(反序低花)</span></li>
+                    <li><span class="badge">2♦</span> = 5+張C, inv <span class="highlight">(跳叫 om)</span></li>
+                    <li><span class="badge">3♣</span> = 5+張C, PRE (阻擊)</li>
+                    <li><span class="badge">3♦ / 3M</span> = SPL (短門), strong ST</li>
+                    <li><span class="badge">4♣</span> = RKC <small>[接下來用 4NT 問 K]</small></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 1: 1D 開叫一階答叫 -->
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>1♦ 開叫：一階答叫架構</h2>
+        <p>1♦ 開叫的答叫邏輯與 1♣ 相似，但加入了二蓋一的元素，分類整理如下：</p>
+        
+        <div class="info-grid">
+            <!-- 均型區塊 -->
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>均型與無王 (BAL)</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">1NT</span> = 6~10點</li>
+                    <li><span class="badge">2NT</span> = 11~12點</li>
+                    <li><span class="badge">3NT</span> = <span class="highlight">3334</span> 牌型, 16~18點</li>
+                    <li><span class="badge">4NT</span> = <span class="highlight">3334</span> 牌型, 19~20點</li>
+                </ul>
+                <div class="rule-card" style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px;">
+                    <p style="margin: 0; font-size: 0.95rem;"><strong>思考題：持 3334 牌型，12~15點時怎麼叫？</strong></p>
+                    <p style="margin: 5px 0 0 0; font-size: 0.95rem; color: var(--accent);">答：先叫 2♣，隨後再叫 3NT。</p>
+                </div>
+            </div>
+
+            <!-- 自然與弱牌區塊 -->
+            <div class="info-box" style="border-top-color: #94a3b8;">
+                <h3>自然叫品與二蓋一</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">1M</span> = 4+張M, 6+點</li>
+                    <li><span class="badge">2♣</span> = 4+張C, 13+點 <span class="highlight">(二蓋一)</span></li>
+                    <li><span class="badge">2M</span> = 6+張M, 5~7點 <small>(only 2/3)</small></li>
+                </ul>
+            </div>
+
+            <!-- 配合與強牌區塊 -->
+            <div class="info-box" style="border-top-color: var(--accent);">
+                <h3>方塊配合與特約</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2♦</span> = 4+張D, 13+點 <span class="highlight">(反序低花)</span></li>
+                    <li><span class="badge">3♣</span> = 5+張D, inv <span class="highlight">(跳叫 om)</span></li>
+                    <li><span class="badge">3♦</span> = 5+張D, PRE (阻擊)</li>
+                    <li><span class="badge">3M / 4♣</span> = SPL (短門), strong ST</li>
+                    <li><span class="badge">4♦</span> = RKC</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 2: 1m - 1S 開叫方再叫 -->
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>1m – 1♠; ? 開叫者再叫結構</h2>
+        <p>當同伴答叫 1♠ 後，開叫者需根據「黑桃是否配合」、「點力多寡」及「牌型」進行明確的描述：</p>
+
+        <div class="info-grid" style="margin-bottom: 25px;">
+            <div class="info-box">
+                <h3>未配合 或 均型牌</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2m / 3m</span> = 6+張m, 12~15點 / 16~18點</li>
+                    <li><span class="badge">2X</span> = Reverse (逆叫), 5+張m + 4+張X, 16+點 <small>(註: m &lt; X &lt; S)</small></li>
+                    <li><span class="badge">2NT</span> = BAL, <span class="highlight">無 4張S</span>, 18~19點</li>
+                </ul>
+            </div>
+            
+            <div class="info-box" style="border-top-color: #3e52b8;">
+                <h3>一般配合 (4張黑桃)</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2♠ / 3♠</span> = 4張S, 12~15點 / 16~17點</li>
+                    <li><span class="badge">3NT!</span> = BAL, <span class="highlight">有 4張S</span>, 18~19點</li>
+                    <li><span class="badge">4m</span> = 6張m + 4張S, 16~18點</li>
+                    <li><span class="badge">4♠</span> = 6張m + 4張S, 19~21點</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="rule-card" style="border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); padding: 20px; border-radius: 12px;">
+            <h3>強配合與帶短門 (SPL) 特殊再叫</h3>
+            <p>當持有 4 張黑桃配合且有特殊牌型時的高階再叫：</p>
+            <div class="info-grid" style="margin-top: 15px;">
+                <div class="info-box" style="border: none; padding: 15px; background: rgba(30, 41, 59, 0.5);">
+                    <p><span class="badge" style="font-size: 1.1rem;">3♥!</span></p>
+                    <p>4張S配合，帶有 <span class="highlight">單張 (19+點)</span> 或 <span class="highlight">缺門 (16+點)</span>。</p>
+                </div>
+                <div class="info-box" style="border: none; padding: 15px; background: rgba(30, 41, 59, 0.5);">
+                    <p><span class="badge" style="font-size: 1.1rem;">4om / 4♥</span></p>
+                    <p>4張S配合，該門 (om 或 H) 為 <span class="highlight">單張</span>，點力介於 16~18點。</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

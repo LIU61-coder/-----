@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 基本概念與滿貫</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 1S - 2D 開叫者再叫</button>
+    <button class="tab-btn" onclick="showTab(2)">3. SPL 與 1H 開叫後續</button>
+    <button class="tab-btn" onclick="showTab(3)">4. 進階後續與配合邏輯</button>
+</nav>
+
+<!-- Tab 0: 基本概念與滿貫 -->
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>二蓋一 (Two-Over-One) 基本概念</h2>
+        <p>核心精神：<span class="highlight">好牌慢慢叫</span>。為了更好的迫局 (Game Forcing) 和滿貫試探，我們建立以下約定：</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: var(--accent);">
+                <h3>基本迫局約定</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">1M - 2m</span> = 4+張m, <span class="highlight">FG</span> <small>(1♦ - 2♣ 同理)</small></li>
+                    <li><span class="badge">1M - 2♥</span> = 5+張♥, <span class="highlight">FG</span></li>
+                </ul>
+            </div>
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>叫滿貫的標準步驟</h3>
+                <ol style="color: var(--text-dim); padding-left: 20px;">
+                    <li style="margin-bottom: 10px;"><strong>找到配合：</strong> 保留滿貫試探 (ST) 叫品的空間。</li>
+                    <li style="margin-bottom: 10px;"><strong>報控制：</strong> 不能被對手直接提拔某門 AK。</li>
+                    <li><strong>問 A 確認：</strong> 確保我們不會缺兩張 Key Card。</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 1: 1S - 2D 開叫者再叫 -->
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>1♠ – 2♦; ? 開叫者再叫結構</h2>
+        <p>當答叫者以 2♦ 迫局後，開叫者的再叫需精確描述牌型與牌力：</p>
+
+        <div class="rule-card" style="border-left-color: #fac400; background: rgba(250, 196, 0, 0.05); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+            <h3>Waiting 叫品</h3>
+            <p><span class="badge" style="font-size: 1.2rem;">2♠! = Waiting</span></p>
+            <p>代表以下三種情況之一，暫時過渡以節省叫牌空間：</p>
+            <ul>
+                <li><span class="highlight">5張♠</span>，點力 12~15</li>
+                <li><span class="highlight">6+張♠</span>，任何迫局點力</li>
+                <li><span class="highlight">4張♣</span>，任何迫局點力</li>
+            </ul>
+        </div>
+        
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>自然與均型再叫</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2♥</span> = 4+張♥</li>
+                    <li><span class="badge">2NT / 3NT</span> = BAL (均型 5332), 16~18點 / 19~21點</li>
+                    <li><span class="badge">3♣</span> = 5+張♣ (雙低花 5-5+)</li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>配合方塊與特殊牌</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">3♦</span> = 配合♦ (4+張♦)</li>
+                    <li><span class="badge">3♠!</span> = ♠ 堅強 (最多一失磴)</li>
+                    <li><span class="badge">3♥ / 4♣</span> = 配合♦, SPL (短門滿貫試探)</li>
+                    <li><span class="badge">4♦</span> = 配合♦, ST (滿貫試探)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 2: SPL 與 1H 開叫後續 -->
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>SPL (Splinter) 與 1♥ 開叫特例</h2>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>1♥ 開叫的二蓋一</h3>
+                <p>進程：<span class="highlight">1♥ – 2♦; 2♠</span></p>
+                <p><strong>2♠ = 4張♠</strong></p>
+                <div style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 6px;">
+                    <p><small>※ 答叫者叫 2♦ 並未否定有四張 ♠ (但通常不會有五張 ♠)。</small></p>
+                </div>
+            </div>
+
+            <div class="info-box" style="border-top-color: #3e52b8;">
+                <h3>什麼是 SPL (Splinter)？</h3>
+                <p>跳叫新花色代表該門花色為<span class="highlight">單張</span>或<span class="highlight">缺門</span>，並同意同伴最後叫出的花色為王牌。希望該門沒有浪費的大牌力量。</p>
+                <ul style="color: var(--text-dim);">
+                    <li><strong>單張：</strong> 其餘三門共需約 <span class="highlight">27 HCP</span> (大牌點) 即可打滿貫。</li>
+                    <li><strong>缺門：</strong> 其餘三門共需約 <span class="highlight">23 ~ 24 HCP</span> 即可打滿貫。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 3: 進階後續與配合邏輯 -->
+<div id="tab-3" class="tab-content">
+    <div class="theory-layout">
+        <h2>1♠ – 2♦ 進階後續與花色配合邏輯</h2>
+
+        <div class="info-grid" style="margin-bottom: 25px;">
+            <div class="info-box">
+                <h3>明確花色長度再叫</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="highlight">1♠ - 2♦;</span></li>
+                    <li><span class="badge">3♣</span> = 5+張♣ (牌型 5-5+)</li>
+                    <li><span class="badge">3♦</span> = 4+張♦</li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>Waiting 後的進階釐清</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="highlight">1♠ - 2♦; 2♠! -</span></li>
+                    <li><span class="badge">2NT</span> = waiting, 無 3張♠</li>
+                    <li><span class="badge">3♣</span> = 5+張♦, 5+張♣</li>
+                    <li><span class="badge">3♦</span> = 6+張♦</li>
+                </ul>
+                <p style="margin-top: 10px; font-size: 0.9rem;">
+                    若進程為：1♠ - 2♦; 2♠! - 2NT; <br>
+                    <span class="badge">3♣</span> = only 4張♣ <br>
+                    <span class="badge">3♦</span> = only 3張♦
+                </p>
+            </div>
+        </div>
+
+        <div class="rule-card" style="border-left-color: var(--accent); background: rgba(250, 196, 0, 0.05); padding: 20px; border-radius: 12px;">
+            <h3>★ 1♠ – 2♦; 找配合的戰略邏輯 ★</h3>
+            <div class="info-grid" style="margin-top: 10px;">
+                <div class="info-box" style="border: none; padding: 10px;">
+                    <h4 style="color: #fff; margin-top: 0;">對 梅花 (♣) 的配合</h4>
+                    <p><span class="highlight">C 5-3：</span> 開叫方主動拉 (叫出♣)</p>
+                    <p><span class="highlight">C 3-5：</span> 答叫方主動拉 (叫出♣)</p>
+                    <p><span class="highlight">C 4-4：</span> 先 waiting 後再拉 (尋找 4-4 配合)</p>
+                </div>
+                <div class="info-box" style="border: none; padding: 10px;">
+                    <h4 style="color: #fff; margin-top: 0;">對 方塊 (♦) 的配合</h4>
+                    <p><span class="highlight">D 4-4：</span> 直接配合 (叫出 3♦)</p>
+                    <p><span class="highlight">D 2-6：</span> 答叫方拉第二次 (再叫♦)</p>
+                    <p><span class="highlight">D 3-5：</span> 先 waiting 後再叫</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

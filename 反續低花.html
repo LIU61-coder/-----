@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 反序低花概念</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 1m - 2m 後續</button>
+    <button class="tab-btn" onclick="showTab(2)">3. 1D - 2C (二蓋一)</button>
+    <button class="tab-btn" onclick="showTab(3)">4. 特殊進程</button>
+</nav>
+
+<!-- Tab 0: 反序低花概念 -->
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>反序低花 (Inverted Minor)</h2>
+        <p>核心概念：<span class="highlight">二線強牌、三線弱牌</span>。利用叫品強弱反轉，保留低線位進行滿貫試探。</p>
+        
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>約定規則</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">1m - 2m</span> = 4+張m, FG <small>(Passed hand 為 only 4m, INV)</small></li>
+                    <li><span class="badge">1m - 跳叫 om</span> = 5+張m, INV</li>
+                    <li><span class="badge">1m - 3m</span> = 5+張m, PRE</li>
+                    <li><span class="badge">1m (X) 2N!</span> = 5+張m, INV+, F1</li>
+                </ul>
+            </div>
+            <div class="info-box" style="border-top-color: #fac400;">
+                <h3>思考題</h3>
+                <p><strong>問：</strong>同伴 1m 開叫，持 4+張m 迫局成局 (FG)，且帶有高花牌組，該叫 2m 還是 1M？</p>
+                <p class="highlight">提示：這取決於高花是否有四張，以及能否在 FG 條件下順利尋找配合。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 1: 1m - 2m 後續 -->
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>1m – 2m! 後續再叫</h2>
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>1C – 2C! 後續</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2D</span> = 5+C + 4+D</li>
+                    <li><span class="badge">2M</span> = 4張M</li>
+                    <li><span class="badge">2N</span> = BAL, 12-14</li>
+                    <li><span class="badge">3C</span> = 5+C, 16+</li>
+                    <li><span class="badge">3D/M</span> = fit C, SPL</li>
+                    <li><span class="badge">3N</span> = BAL, 18-19</li>
+                    <li><span class="badge">4C</span> = RKC</li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>1D – 2D! 後續</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2M</span> = 4張M</li>
+                    <li><span class="badge">2N</span> = BAL, 12-14</li>
+                    <li><span class="badge">3D</span> = 5+D, 16+</li>
+                    <li><span class="badge">3M</span> = fit D, SPL</li>
+                    <li><span class="badge">3N</span> = BAL, 18-19</li>
+                    <li><span class="badge">4D</span> = RKC</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 2: 1D - 2C 後續 -->
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>1D – 2C (二蓋一) 後續</h2>
+        <div class="rule-card" style="border-left-color: #4ade80; padding: 20px;">
+            <div class="info-grid">
+                <div class="info-box" style="border: none;">
+                    <p><span class="badge">2D!</span> = Waiting <small>(6+D, 12-15; 或 4M, 無5+D)</small></p>
+                    <p><span class="badge">2M</span> = 5D + 4M</p>
+                    <p><span class="badge">2N</span> = BAL, 12-14</p>
+                </div>
+                <div class="info-box" style="border: none;">
+                    <p><span class="badge">3C</span> = fit C (4+張)</p>
+                    <p><span class="badge">3D</span> = 6+D, 16+</p>
+                    <p><span class="badge">3M!</span> = fit C, SPL</p>
+                    <p><span class="badge">3N</span> = BAL, 18-19</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 3: 特殊進程 -->
+<div id="tab-3" class="tab-content">
+    <div class="theory-layout">
+        <h2>特殊進程處理</h2>
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>1C – 2D 與 1D – 3C</h3>
+                <p><strong>1C - 2D;</strong></p>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">2M</span> = stopper or suit</li>
+                    <li><span class="badge">2N / 3C</span> = S/O (止叫)</li>
+                    <li><span class="badge">3D/M</span> = short, CoG or ST <small>(回應 4C=good)</small></li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>1D - 3C;</strong></p>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">3D</span> = S/O</li>
+                    <li><span class="badge">3M</span> = short, CoG or ST <small>(回應 4C=good)</small></li>
+                    <li><span class="badge">3N</span> = S/O</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

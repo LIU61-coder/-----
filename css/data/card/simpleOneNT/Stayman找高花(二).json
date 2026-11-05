@@ -1,0 +1,279 @@
+{
+    "metadata": {
+        "title": "Advance 策略計畫報告",
+        "timestamp": "2025-12-23T10:02:34.719Z",
+        "dealer": "北",
+        "vulnerability": "None"
+    },
+    "hands": {
+        "north": [
+            {
+                "suit": "♠",
+                "rank": "A"
+            },
+            {
+                "suit": "♠",
+                "rank": "J"
+            },
+            {
+                "suit": "♠",
+                "rank": "7"
+            },
+            {
+                "suit": "♠",
+                "rank": "2"
+            },
+            {
+                "suit": "♥",
+                "rank": "A"
+            },
+            {
+                "suit": "♥",
+                "rank": "K"
+            },
+            {
+                "suit": "♥",
+                "rank": "3"
+            },
+            {
+                "suit": "♣",
+                "rank": "6"
+            },
+            {
+                "suit": "♣",
+                "rank": "3"
+            },
+            {
+                "suit": "♣",
+                "rank": "2"
+            },
+            {
+                "suit": "♦",
+                "rank": "K"
+            },
+            {
+                "suit": "♦",
+                "rank": "9"
+            },
+            {
+                "suit": "♦",
+                "rank": "6"
+            }
+        ],
+        "south": [
+            {
+                "suit": "♠",
+                "rank": "8"
+            },
+            {
+                "suit": "♥",
+                "rank": "Q"
+            },
+            {
+                "suit": "♥",
+                "rank": "8"
+            },
+            {
+                "suit": "♥",
+                "rank": "4"
+            },
+            {
+                "suit": "♥",
+                "rank": "2"
+            },
+            {
+                "suit": "♣",
+                "rank": "K"
+            },
+            {
+                "suit": "♣",
+                "rank": "9"
+            },
+            {
+                "suit": "♣",
+                "rank": "8"
+            },
+            {
+                "suit": "♣",
+                "rank": "7"
+            },
+            {
+                "suit": "♦",
+                "rank": "A"
+            },
+            {
+                "suit": "♦",
+                "rank": "8"
+            },
+            {
+                "suit": "♦",
+                "rank": "5"
+            },
+            {
+                "suit": "♠",
+                "rank": "4"
+            }
+        ],
+        "east": [
+            {
+                "suit": "♠",
+                "rank": "K"
+            },
+            {
+                "suit": "♠",
+                "rank": "10"
+            },
+            {
+                "suit": "♠",
+                "rank": "9"
+            },
+            {
+                "suit": "♠",
+                "rank": "3"
+            },
+            {
+                "suit": "♥",
+                "rank": "J"
+            },
+            {
+                "suit": "♥",
+                "rank": "6"
+            },
+            {
+                "suit": "♣",
+                "rank": "A"
+            },
+            {
+                "suit": "♦",
+                "rank": "Q"
+            },
+            {
+                "suit": "♦",
+                "rank": "J"
+            },
+            {
+                "suit": "♦",
+                "rank": "4"
+            },
+            {
+                "suit": "♦",
+                "rank": "3"
+            },
+            {
+                "suit": "♦",
+                "rank": "2"
+            },
+            {
+                "suit": "♣",
+                "rank": "J"
+            }
+        ],
+        "west": [
+            {
+                "suit": "♠",
+                "rank": "Q"
+            },
+            {
+                "suit": "♠",
+                "rank": "6"
+            },
+            {
+                "suit": "♠",
+                "rank": "5"
+            },
+            {
+                "suit": "♥",
+                "rank": "10"
+            },
+            {
+                "suit": "♥",
+                "rank": "9"
+            },
+            {
+                "suit": "♥",
+                "rank": "7"
+            },
+            {
+                "suit": "♥",
+                "rank": "5"
+            },
+            {
+                "suit": "♣",
+                "rank": "Q"
+            },
+            {
+                "suit": "♣",
+                "rank": "10"
+            },
+            {
+                "suit": "♣",
+                "rank": "5"
+            },
+            {
+                "suit": "♣",
+                "rank": "4"
+            },
+            {
+                "suit": "♦",
+                "rank": "10"
+            },
+            {
+                "suit": "♦",
+                "rank": "7"
+            }
+        ]
+    },
+    "bidding": [
+        {
+            "pos": "北",
+            "val": "1NT",
+            "note": ""
+        },
+        {
+            "pos": "東",
+            "val": "Pass",
+            "note": ""
+        },
+        {
+            "pos": "南",
+            "val": "2♣",
+            "note": ""
+        },
+        {
+            "pos": "西",
+            "val": "Pass",
+            "note": ""
+        },
+        {
+            "pos": "北",
+            "val": "2♠",
+            "note": ""
+        },
+        {
+            "pos": "東",
+            "val": "Pass",
+            "note": ""
+        },
+        {
+            "pos": "南",
+            "val": "2NT",
+            "note": ""
+        },
+        {
+            "pos": "西",
+            "val": "Pass",
+            "note": ""
+        },
+        {
+            "pos": "北",
+            "val": "Pass",
+            "note": ""
+        },
+        {
+            "pos": "東",
+            "val": "Pass",
+            "note": ""
+        }
+    ],
+    "comment":"我們一樣叫2♣來對高花，而既然沒對到，我們便叫2NT邀請。"
+}

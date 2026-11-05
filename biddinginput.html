@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/bidding.css">
+    <style>
+        :root {
+            --dark-bg: #1a1a1a;
+            --panel-bg: #2d2d2d;
+            --accent: #fac400;
+            --suit-club: #68b04d;
+            --suit-diamond: #fac400;
+            --suit-heart: #e84c3d;
+            --suit-spade: #3e52b8;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+        
+        .bid-cell:hover::after {
+            content: "點擊編輯備註";
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            font-size: 10px;
+            color: var(--accent);
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bidding-history">
+        <h3 style="color: var(--accent);">叫牌記錄與樹狀分枝</h3>
+        
+        <!-- 原本的頂部叫牌位置欄位 -->
+        <div class="history-table" id="header-row">
+            <div>西 (W)</div><div>北 (N)</div><div>東 (E)</div><div>南 (S)</div>
+        </div>
+        
+        <!-- 原本的直線叫牌 Log -->
+        <div class="history-table" id="bid-log" style="overflow-y: auto; max-height: 150px; border-bottom: 1px solid #444;"></div>
+        
+        <!-- 【新增】樹狀分枝展示區 -->
+        <h4 style="color: var(--accent); margin-top: 15px; margin-bottom: 5px;">分枝樹狀圖 (點擊節點可切換/編輯)</h4>
+        <div id="tree-container" style="overflow: auto; flex-grow: 1; background: #222; padding: 10px; border-radius: 6px;"></div>
+
+        <button onclick="location.reload()" style="background: #ff4757; border:none; padding:10px; color:white; border-radius:4px; cursor:pointer; margin-top: 10px;">清空重叫</button>
+    </div>
+
+    <div class="input-area">
+        <div class="dealer-setup">
+            <span>設定 Dealer:</span>
+            <select id="dealer-select" onchange="initGame()" style="padding: 5px;">
+                <option value="0">西 (West)</option>
+                <option value="1">北 (North)</option>
+                <option value="2">東 (East)</option>
+                <option value="3" selected>南 (South)</option>
+            </select>
+
+            <span style="margin-left: 15px;">身價 (Vul):</span>
+            <select id="vul-select" style="padding: 5px;">
+                <option value="None">無身價 (None)</option>
+                <option value="NS">南北有身價 (N-S)</option>
+                <option value="EW">東西有身價 (E-W)</option>
+                <option value="Both">雙方有身價 (Both)</option>
+            </select>
+            <button onclick="toggleHandPreview()" style="margin-left: 15px; background: #2e7d32; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            👁️  查看手牌
+            </button>
+            <span class="status-bar" id="turn-display" style="margin-left: 15px;">輪到：南</span>
+        </div>
+
+        <div id="hand-preview-modal" class="hand-modal">
+            <div class="hand-modal-content">
+                <span class="hand-modal-close" onclick="toggleHandPreview()">&times;</span>
+                <h3 style="margin: 0 0 10px 0; color: var(--accent); text-align: center;">先前載入之牌局手牌</h3>
+                
+                <div class="compass-grid" id="compass-container">
+                    <div class="hand-box pos-north" id="hand-pos-north"></div>
+                    <div class="hand-box pos-west" id="hand-pos-west"></div>
+                    <div class="hand-box pos-east" id="hand-pos-east"></div>
+                    <div class="hand-box pos-south" id="hand-pos-south"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bid-matrix" id="matrix">
+            </div>
+
+        <div class="bid-matrix">
+            <button class="bid-btn pass" onclick="makeBid('Pass')">PASS</button>
+            <button class="bid-btn double" id="btn-X" onclick="makeBid('X')" disabled>X</button>
+            <button class="bid-btn redouble" id="btn-XX" onclick="makeBid('XX')" disabled>XX</button>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 10px;">
+            <button onclick="copyValidBiddingSequence()" style="background: #e67e22; border:none; padding:10px; color:white; border-radius:4px; cursor:pointer; font-weight:bold;">
+                📋 複製正確叫續 (至筆記庫)
+            <button onclick="exportFullGame()" style="background: #3b82f6; border:none; padding:10px; color:white; border-radius:4px; cursor:pointer; font-weight:bold;">
+                匯出完整牌局
+            </button>
+            <button onclick="handleBackToInput()" style="background: #636e72; border:none; padding:10px; color:white; border-radius:4px; cursor:pointer;">
+                返回重新輸入手牌
+            </button>
+        </div>
+    </div>
+
+    <script src="js/bidding(input).js"></script>
+    <script>
+        // 自動篩選並複製無錯誤節點的叫牌路徑
+        function copyValidBiddingSequence() {
+            // 1. 取得身價與開叫家資訊
+            const dealerSelect = document.getElementById('dealer-select');
+            const vulSelect = document.getElementById('vul-select');
+
+            const dealerValue = parseInt(dealerSelect.value); // 0:西, 1:北, 2:東, 3:南
+            const dealerNames = ["西", "北", "東", "南"];
+            const dealerName = dealerNames[dealerValue];
+
+            // 計算南家（我方）是第幾家開叫
+            const southSeatMap = { 0: "第 4 家", 1: "第 3 家", 2: "第 2 家", 3: "第 1 家 (我開叫)" };
+            const southSeatText = southSeatMap[dealerValue];
+
+            const vulTextMap = {
+                "None": "無身價",
+                "NS": "南北有身價 (N-S)",
+                "EW": "東西有身價 (E-W)",
+                "Both": "雙方有身價 (Both)"
+            };
+            const vulName = vulTextMap[vulSelect.value] || vulSelect.value;
+
+            // 2. 取得無錯誤的叫牌路徑 (isError === false)
+            let validNodes = [];
+            if (currentPath && currentPath.length > 0) {
+                validNodes = currentPath.filter(node => !node.isError);
+            } else {
+                function findValidBranch(node) {
+                    if (node.isError) return null;
+                    let path = node.val !== 'root' ? [node] : [];
+                    if (!node.children || node.children.length === 0) return path;
+                    for (let child of node.children) {
+                        if (!child.isError) {
+                            let subPath = findValidBranch(child);
+                            if (subPath) return path.concat(subPath);
+                        }
+                    }
+                    return path;
+                }
+                validNodes = findValidBranch(biddingTree) || [];
+            }
+
+            if (validNodes.length === 0) {
+                alert("⚠️ 目前路徑中沒有可用的正確叫牌節點！");
+                return;
+            }
+
+            // 3. 轉為對應格式：Pass -> -，東西家叫品加小括號 ()
+            const formattedBids = validNodes.map(node => {
+                const rawVal = node.val === 'Pass' ? '-' : node.val;
+                const isNS = (node.pos === '南' || node.pos === '北');
+                return isNS ? rawVal : `(${rawVal})`;
+            });
+
+            // 4. 核心：每 4 個叫品（即一輪叫牌）進行換行處理
+            let formattedRows = [];
+            for (let i = 0; i < formattedBids.length; i += 4) {
+                const chunk = formattedBids.slice(i, i + 4);
+                formattedRows.push(chunk.join(', '));
+            }
+            // 使用逗點 + 換行連接
+            const biddingSequenceStr = formattedRows.join(',\n');
+
+            // 5. 組合包含身價與開叫資訊的完整匯出文字
+            const fullCopyText = `【身價】: ${vulName}\n` +
+                `【開叫】: ${dealerName}家開叫 (南家席次: ${southSeatText})\n` +
+                `【叫續】:\n` +
+                `${biddingSequenceStr}`;
+
+            // 6. 寫入剪貼簿
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(fullCopyText).then(() => {
+                    alert(`✅ 已成功複製叫牌筆記！\n\n【貼上內容預覽】:\n${fullCopyText}`);
+                });
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = fullCopyText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert(`✅ 已成功複製叫牌筆記！\n\n${fullCopyText}`);
+            }
+        }
+        function exportFullGame() {
+            const savedHands = localStorage.getItem('advance_current_hands');
+            
+            if (!savedHands) {
+                alert("找不到手牌資料，請先回排牌頁面！");
+                return;
+            }
+
+            const rawHandData = JSON.parse(savedHands); // 這是目前的扁平陣列結構
+
+            // --- 核心轉換邏輯：從 [ {suit, rank} ] 轉為 { "S": [], "H": []... } ---
+            const formattedHands = {};
+            const suitMap = { '♠': 'S', '♥': 'H', '♦': 'D', '♣': 'C' };
+            const positions = ['north', 'south', 'east', 'west'];
+
+            positions.forEach(pos => {
+                // 初始化該方位的標準結構
+                formattedHands[pos] = { "S": [], "H": [], "D": [], "C": [] };
+                
+                // 如果該方位有資料，則進行分類
+                if (rawHandData[pos] && Array.isArray(rawHandData[pos])) {
+                    rawHandData[pos].forEach(card => {
+                        const suitKey = suitMap[card.suit];
+                        if (suitKey) {
+                            // 標準化：10 轉為 T，並確保是字串
+                            const rankStr = (card.rank === '10') ? 'T' : String(card.rank);
+                            formattedHands[pos][suitKey].push(rankStr);
+                        }
+                    });
+
+                    // 選做：對花色內的數字進行從大到小排序 (A, K, Q, J, T, 9...)
+                    const rankOrder = { 'A': 14, 'K': 13, 'Q': 12, 'J': 11, 'T': 10, '9': 9, '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2 };
+                    for (let s in formattedHands[pos]) {
+                        formattedHands[pos][s].sort((a, b) => rankOrder[b] - rankOrder[a]);
+                    }
+                }
+            });
+            print(formattedHands)
+            // 取得你提供的樹狀叫牌資料
+            const biddingData = window.getBiddingData();
+
+            // 組裝最終報告
+            const finalReport = {
+                metadata: {
+                    title: "Advance 策略計畫報告",
+                    timestamp: new Date().toISOString(),
+                    // 這裡假設你有一個 dealer-select 的 element
+                    dealer: document.getElementById('dealer-select') ? ["西", "北", "東", "南"][document.getElementById('dealer-select').value] : "南",
+                    vulnerability: document.getElementById('vul-select') ? document.getElementById('vul-select').value : "None"
+                },
+                hands: formattedHands, // 使用轉換後漂亮的結構
+                bidding: biddingData
+            };
+
+            // 1. 先產出標準縮排的 JSON 字串
+            let jsonString = JSON.stringify(finalReport, null, 4);
+
+            // 2. 使用正規表達式 (Regex)，把陣列內部的換行與縮排「壓扁」
+            // 這個動作會把類似 [ \n "A", \n "K" ] 轉成 [ "A", "K" ]
+            jsonString = jsonString.replace(/\[\s+([^\[\]]+?)\s+\]/g, (match, p1) => {
+                return "[" + p1.replace(/\s+/g, " ") + "]";
+            });
+
+            // 3. 下載處理過後的字串
+            const blob = new Blob([jsonString], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `Advance_Strategy_${Date.now()}.json`;
+            a.click();
+        } 
+
+        function handleBackToInput() {
+            if (confirm("確定要返回嗎？這將會清空目前已暫存的手牌資料。")) {
+                localStorage.removeItem('advance_hands');
+                window.location.href = 'cardinput.html';
+            }
+        }
+    </script>
+</body>
+</html>

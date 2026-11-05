@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/bidding(teach).css">
+    <style>
+        :root {
+            --dark-bg: #1a1a1a;
+            --accent: #fac400;
+            --suit-club: #68b04d;
+            --suit-diamond: #fac400;
+            --suit-heart: #e84c3d;
+            --suit-spade: #3e52b8;
+            --green-bg: linear-gradient(180deg, #028345 0%, #68b04d 100%);
+            --blue-bg: linear-gradient(180deg, #0c2b8a 0%, #3e52b8 100%);
+            --yellow-bg: linear-gradient(180deg, #fac400 0%, #fac400 100%);
+            --red-bg: linear-gradient(180deg, #b01a1a 0%, #e84c3d 100%);
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-section">
+    <div class="bidding-history">
+        <h4 id="game-title" style="margin: 0 0 10px 0;">叫牌桌</h4>
+        <div class="history-table"><div>西</div><div>北</div><div>東</div><div>南</div></div>
+        <div id="bid-log"></div>
+        <button onclick="location.href='teach.html'" style="color: #2d98da;margin-top:10px; padding:5px; cursor:pointer;">牌局選擇</button>
+    </div>
+
+    <div class="input-area">
+        <div style="margin-bottom: 15px;">
+            <span id="turn-display" style="color:var(--accent); font-weight:bold; font-size: 1.2rem;">準備中...</span>
+            <span id="vul-display" style="margin-left: 15px; padding: 2px 8px; border-radius: 4px; font-size: 14px; background: #444;">身價：-</span>
+        </div>
+        <div id="matrix" class="bid-matrix"></div>
+        <div class="bid-matrix" style="margin-top:10px;">
+            <button class="bid-btn pass" onclick="handlePlayerAction('Pass')">PASS</button>
+            <button class="bid-btn" id="btn-X" onclick="handlePlayerAction('X')" disabled>X</button>
+            <button class="bid-btn" id="btn-XX" onclick="handlePlayerAction('XX')" disabled>XX</button>
+        </div>
+    </div>
+</div>
+
+<div class="bottom-section" id="table"></div>
+
+
+<script src="js/cardset.js"></script>
+<script src="js/bidding(teach).js"></script>
+
+</body>
+</html>

@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>橋藝叫牌系統筆記庫 (極簡叫牌與身價版)</title>
+    <style>
+        :root {
+            --green-bg: linear-gradient(180deg, #028345 0%, #68b04d 100%);
+            --blue-bg: linear-gradient(180deg, #0c2b8a 0%, #3e52b8 100%);
+            --yellow-bg: linear-gradient(180deg, #fac400 0%, #fac400 100%);
+            --red-bg : linear-gradient(180deg, #b01a1a 0%, #e84c3d 100%);
+            --global-note-font-size: 14px;
+        }
+
+        body {
+            background-color: #122b1a;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: "Arial Black", "Microsoft JhengHei", sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* 左側欄 */
+        .sidebar {
+            width: 320px;
+            background: rgba(0,0,0,0.9);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-right: 2px solid #fac400;
+            box-shadow: 2px 0 15px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        .editor-panel {
+            flex-grow: 1;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        h2, h3 { color: #fac400; margin: 0; }
+        
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        .btn:hover { transform: scale(1.02); }
+        .btn-gold { background: #fac400; color: #111; }
+        .btn-green { background: #028345; color: white; }
+        .btn-red { background: #ff4757; color: white; }
+        .btn-dark { background: #333; color: #ddd; border: 1px solid #555; }
+
+        .note-item {
+            background: #222;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .note-item:hover { border-color: #fac400; }
+        .note-item.active { border-color: #fac400; background: rgba(250, 196, 0, 0.15); box-shadow: 0 0 10px rgba(250, 196, 0, 0.2); }
+        .note-title-display { font-size: 15px; font-weight: bold; margin-bottom: 5px; }
+
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .input-group label { font-size: 13px; color: #ddd; font-weight: bold; }
+        input[type="text"], select, textarea {
+            background: #1e1e1e;
+            border: 1px solid #555;
+            color: white;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        input[type="text"]:focus, select:focus, textarea:focus { outline: none; border-color: #fac400; }
+        textarea { resize: vertical; line-height: 1.5; }
+
+        .deal-content-input {
+            font-size: var(--global-note-font-size) !important;
+        }
+
+        .deal-card {
+            background: #161616;
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+        }
+
+        .deal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 8px;
+        }
+
+        .input-toggle-area {
+            background: #0d0d0d;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px dashed #555;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .hand-preview-table {
+            display: grid;
+            grid-template-areas: 
+                ". north ."
+                "west center east"
+                ". south .";
+            grid-template-columns: minmax(180px, 1fr) minmax(260px, 320px) minmax(180px, 1fr);
+            grid-template-rows: auto minmax(150px, auto) auto;
+            gap: 12px;
+            background: radial-gradient(circle, #1a5e38 0%, #0d331e 100%);
+            border: 6px solid #3d2314;
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8), 0 8px 20px rgba(0,0,0,0.6);
+            align-items: center;
+            justify-items: center;
+        }
+
+        .pos-center {
+            grid-area: center;
+            width: 100%;
+            height: 100%;
+            min-height: 150px;
+            background: rgba(0, 0, 0, 0.75);
+            border: 2px solid #fac400;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            max-height: 250px;
+        }
+
+        .center-bidding-wrapper { width: 100%; }
+
+        .bidding-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            text-align: center;
+            width: 100%;
+        }
+        
+        /* 叫牌標頭：預設黑/暗色，有身價為醒目紅色 */
+        .bidding-grid-header {
+            background: #2a2a2a;
+            padding: 6px 2px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #888;
+            border-radius: 4px;
+            border: 1px solid #333;
+        }
+        .bidding-grid-header.vul-red {
+            background: #b01a1a;
+            color: #ffffff;
+            border-color: #ff4757;
+            box-shadow: 0 0 6px rgba(232, 76, 61, 0.5);
+        }
+
+        .bid-cell-box {
+            background: #1a1a1a;
+            padding: 5px 2px;
+            border-radius: 3px;
+            font-size: 13px;
+            font-family: monospace;
+            border: 1px solid #333;
+        }
+        .bid-cell-box.empty { background: transparent; border: none; }
+        .bid-cell-box.opponent { color: #aaa; }
+        .bid-cell-box.teammate { color: #fff; font-weight: bold; }
+
+        .pos-box { display: flex; flex-direction: column; width: 100%; }
+        .pos-title { color: #fac400; font-size: 13px; margin-bottom: 6px; font-weight: bold; text-align: center; }
+        .pos-north { grid-area: north; max-width: 380px; }
+        .pos-south { grid-area: south; max-width: 380px; }
+        .pos-west { grid-area: west; }
+        .pos-east { grid-area: east; }
+
+        .hand-suit-row { 
+            display: flex; 
+            flex-direction: row; 
+            height: 28px; 
+            align-items: center; 
+            margin-bottom: 4px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .suit-indicator { width: 20px; font-size: 16px; font-weight: bold; text-align: center; margin-right: 6px; }
+
+        .card.mini-layout { 
+            position: relative !important; 
+            transform: scale(0.72); 
+            transform-origin: left center; 
+            margin-right: -16px; 
+            flex-shrink: 0; 
+            width: 46px; 
+            aspect-ratio: 1/1.4; 
+            border-radius: 4px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.6); 
+        }
+        .card.mini-layout::after { 
+            content: attr(data-suit); 
+            position: absolute; 
+            top: -18%; 
+            width: 50%; 
+            height: 25%; 
+            border-radius: 4px 4px 0 0; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 11px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: -1; 
+        }
+        .label-box { background: white; width: 80%; height: 70%; display: flex; align-items: center; justify-content: center; border-radius: 2px; }
+        .rank-text { font-size: 15px; font-weight: 900; }
+        
+        .spade-suit { background: var(--blue-bg); } .spade-suit::after { background: #c5cae9; color: #0c2b8a; } .spade-suit .rank-text { color: #0c2b8a; }
+        .heart-suit { background: var(--red-bg); } .heart-suit::after { background: #ffcdd2; color: #b01a1a; } .heart-suit .rank-text { color: #b01a1a; }
+        .club-suit { background: var(--green-bg); } .club-suit::after { background: #a5d6a7; color: #028345; } .club-suit .rank-text { color: #028345; }
+        .diamond-suit { background: var(--yellow-bg); } .diamond-suit::after { background: #ffe897; color: #fac400; } .diamond-suit .rank-text { color: #fac400; }
+
+        #empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: #aaa; gap: 20px;}
+        #editor-content { display: none; flex-direction: column; height: 100%; gap: 20px; }
+        .shortcut-tips { font-size: 11px; color: #888; background: #111; padding: 8px; border-radius: 4px; border: 1px solid #333; }
+
+        #toast-notification {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #2ecc71;
+            color: #111;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 999;
+        }
+        #toast-notification.show { opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <!-- 左側筆記列表 -->
+    <div class="sidebar">
+        <h3>📚 橋藝筆記庫</h3>
+        
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button class="btn btn-gold" id="btn-open-file" onclick="openMasterFile()">📂 連結總筆記 JSON</button>
+            <div id="file-control-btns" style="display: none; gap: 6px;">
+                <button class="btn btn-dark" style="flex: 1; font-size: 11px; padding: 6px;" onclick="changeFile()">🔄 更換檔案</button>
+                <button class="btn btn-red" style="flex: 1; font-size: 11px; padding: 6px;" onclick="disconnectFile()">❌ 取消連結</button>
+            </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 6px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 6px; border: 1px solid #333;">
+            <label style="font-size: 12px; color: #fac400; font-weight: bold;">⚙️ 全域使用者偏好設定</label>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; color: #ccc;">筆記字體大小：</span>
+                <select id="global-font-size" style="padding: 4px 8px; font-size: 12px;" onchange="updateGlobalFontSize(this.value)">
+                    <option value="12px">小 (12px)</option>
+                    <option value="14px" selected>中 (14px)</option>
+                    <option value="16px">大 (16px)</option>
+                    <option value="18px">特大 (18px)</option>
+                    <option value="20px">超大 (20px)</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn btn-green" id="btn-add-note" onclick="addNewNote()" disabled>➕ 新增主題 (Ctrl+Shift+N)</button>
+        
+        <div class="shortcut-tips">
+            <b>💡 快捷鍵指南：</b><br>
+            • 儲存：Ctrl + S<br>
+            • 新增牌局：Alt + A<br>
+            • 切換輸入欄：Ctrl + E
+        </div>
+        
+        <hr style="width: 100%; border-color: #444; margin: 0;">
+        <div id="note-list" style="display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex-grow: 1;"></div>
+    </div>
+
+    <!-- 右側編輯區 -->
+    <div class="editor-panel">
+        <div id="empty-state">
+            <h2>尚未載入檔案</h2>
+            <p id="empty-desc">請點擊左上角「連結總筆記 JSON」，選擇或建立你的橋藝筆記檔。</p>
+        </div>
+
+        <div id="editor-content">
+            <div class="input-group">
+                <label>主題標題 (Topic Title)：</label>
+                <input type="text" id="edit-title" placeholder="例如：1NT 開叫與續叫體系" style="font-size: 18px; font-weight: bold;" oninput="onTitleInput(this.value)">
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                <h3>🃏 牌局與叫品項目列表</h3>
+                <button class="btn btn-green" onclick="addDealItem()">➕ 新增牌局/叫品 (Alt+A)</button>
+            </div>
+
+            <div id="deals-container"></div>
+
+            <div style="display: flex; gap: 15px; margin-top: 20px;">
+                <button class="btn btn-gold" style="flex-grow: 1; font-size: 16px; padding: 12px;" onclick="saveCurrentNote()">💾 儲存所有變更 (Ctrl+S)</button>
+                <button class="btn btn-red" style="width: 140px;" onclick="deleteCurrentNote()">🗑️ 刪除整個主題</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-notification">✓ 已成功儲存</div>
+
+    <script>
+        let fileHandle = null;
+        let masterData = { version: "2.0", settings: { fontSize: "14px" }, notes: [] };
+        let currentNoteId = null;
+
+        function getDB() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open('BridgeNotesDB', 1);
+                req.onupgradeneeded = () => req.result.createObjectStore('handles');
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function saveHandleToDB(handle) {
+            const db = await getDB();
+            const tx = db.transaction('handles', 'readwrite');
+            tx.objectStore('handles').put(handle, 'masterHandle');
+        }
+
+        async function getHandleFromDB() {
+            try {
+                const db = await getDB();
+                return new Promise((resolve) => {
+                    const tx = db.transaction('handles', 'readonly');
+                    const req = tx.objectStore('handles').get('masterHandle');
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => resolve(null);
+                });
+            } catch (e) { return null; }
+        }
+
+        async function deleteHandleFromDB() {
+            try {
+                const db = await getDB();
+                const tx = db.transaction('handles', 'readwrite');
+                tx.objectStore('handles').delete('masterHandle');
+            } catch (e) {}
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const savedHandle = await getHandleFromDB();
+            if (savedHandle) {
+                fileHandle = savedHandle;
+                const btn = document.getElementById('btn-open-file');
+                btn.innerText = "⚡ 點此授權恢復檔案連結";
+                btn.className = "btn btn-gold";
+                document.getElementById('file-control-btns').style.display = 'flex';
+                
+                const perm = await fileHandle.queryPermission({ mode: 'readwrite' });
+                if (perm === 'granted') {
+                    await readAndInitialize();
+                } else {
+                    document.getElementById('empty-desc').innerText = "檢測到上次編輯的檔案！請點擊左側「⚡ 點此授權恢復檔案連結」即可繼續作業。";
+                }
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                saveCurrentNote();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'n') {
+                e.preventDefault();
+                if (!document.getElementById('btn-add-note').disabled) addNewNote();
+            }
+            if (e.altKey && e.key.toLowerCase() === 'a') {
+                e.preventDefault();
+                if (currentNoteId) addDealItem();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'e') {
+                e.preventDefault();
+                toggleAllInputs();
+            }
+        });
+
+        async function openMasterFile() {
+            try {
+                if (fileHandle) {
+                    const perm = await fileHandle.requestPermission({ mode: 'readwrite' });
+                    if (perm === 'granted') {
+                        await readAndInitialize();
+                        return;
+                    }
+                }
+                await selectNewFile();
+            } catch (err) {
+                if (err.name !== 'AbortError') showToast("⚠️ 檔案連線失敗", true);
+            }
+        }
+
+        async function changeFile() { await selectNewFile(); }
+
+        async function selectNewFile() {
+            try {
+                const [newHandle] = await window.showOpenFilePicker({
+                    types: [{ description: 'JSON Files', accept: { 'application/json': ['.json'] } }],
+                    multiple: false
+                });
+
+                fileHandle = newHandle;
+                await saveHandleToDB(fileHandle);
+                await readAndInitialize();
+                showToast("✓ 已成功更換連結檔案");
+            } catch (err) {
+                if (err.name !== 'AbortError') showToast("⚠️ 開啟檔案失敗", true);
+            }
+        }
+
+        async function disconnectFile() {
+            if (!confirm("確定要取消與此 JSON 檔案的連結嗎？")) return;
+
+            await deleteHandleFromDB();
+            fileHandle = null;
+            masterData = { version: "2.0", settings: { fontSize: "14px" }, notes: [] };
+            currentNoteId = null;
+            localStorage.removeItem('bridge_last_note_id');
+
+            document.getElementById('btn-add-note').disabled = true;
+            document.getElementById('file-control-btns').style.display = 'none';
+            
+            const btnOpen = document.getElementById('btn-open-file');
+            btnOpen.innerText = "📂 連結總筆記 JSON";
+            btnOpen.className = "btn btn-gold";
+
+            document.getElementById('note-list').innerHTML = '';
+            document.getElementById('editor-content').style.display = 'none';
+            document.getElementById('empty-state').style.display = 'flex';
+            document.getElementById('empty-state').innerHTML = `
+                <h2>尚未載入檔案</h2>
+                <p id="empty-desc">請點擊左上角「連結總筆記 JSON」，選擇或建立你的橋藝筆記檔。</p>
+            `;
+
+            showToast("ℹ️ 已成功取消連結");
+        }
+
+        function updateGlobalFontSize(size, shouldSave = true) {
+            document.documentElement.style.setProperty('--global-note-font-size', size);
+            if (!masterData.settings) masterData.settings = {};
+            masterData.settings.fontSize = size;
+
+            if (shouldSave && fileHandle) {
+                writeToFile();
+                showToast("⚙️ 全域字體大小已寫入 JSON 儲存");
+            }
+        }
+
+        async function readAndInitialize() {
+            const file = await fileHandle.getFile();
+            const contents = await file.text();
+            
+            masterData = contents.trim() === "" ? { version: "2.0", settings: { fontSize: "14px" }, notes: [] } : JSON.parse(contents);
+            if (!masterData.notes) masterData.notes = [];
+            if (!masterData.settings) masterData.settings = { fontSize: "14px" };
+
+            const globalSize = masterData.settings.fontSize || '14px';
+            document.getElementById('global-font-size').value = globalSize;
+            updateGlobalFontSize(globalSize, false);
+
+            document.getElementById('btn-add-note').disabled = false;
+            
+            const btnOpen = document.getElementById('btn-open-file');
+            btnOpen.innerText = "📂 已連結: " + fileHandle.name;
+            btnOpen.className = "btn btn-dark";
+            document.getElementById('file-control-btns').style.display = 'flex';
+            
+            renderNoteList();
+
+            const lastId = localStorage.getItem('bridge_last_note_id');
+            if (lastId && masterData.notes.some(n => n.id === lastId)) {
+                loadNoteIntoEditor(lastId);
+            } else {
+                document.getElementById('empty-state').innerHTML = `<h2 style="color:#2ecc71;">✓ 連結成功</h2><p>共讀取 ${masterData.notes.length} 項主題筆記，請點擊左側選擇主題。</p>`;
+            }
+        }
+
+        function renderNoteList() {
+            const listEl = document.getElementById('note-list');
+            listEl.innerHTML = '';
+
+            masterData.notes.forEach(note => {
+                const item = document.createElement('div');
+                item.className = `note-item ${note.id === currentNoteId ? 'active' : ''}`;
+                item.dataset.id = note.id;
+                item.onclick = () => loadNoteIntoEditor(note.id);
+                
+                const title = document.createElement('div');
+                title.className = 'note-title-display';
+                title.innerText = note.title || '未命名主題';
+                
+                const count = document.createElement('div');
+                count.className = 'note-count-display';
+                count.style.fontSize = '12px';
+                count.style.color = '#888';
+                count.innerText = `包含 ${(note.deals || []).length} 個牌局`;
+
+                item.appendChild(title);
+                item.appendChild(count);
+                listEl.appendChild(item);
+            });
+        }
+
+        function loadNoteIntoEditor(id) {
+            currentNoteId = id;
+            localStorage.setItem('bridge_last_note_id', id);
+
+            const note = masterData.notes.find(n => n.id === id);
+            if (note) {
+                document.getElementById('empty-state').style.display = 'none';
+                document.getElementById('editor-content').style.display = 'flex';
+                document.getElementById('edit-title').value = note.title || '';
+
+                if (!note.deals) {
+                    note.deals = [{
+                        id: 'd_' + Date.now(),
+                        dealer: 'N',
+                        vulnerability: 'None',
+                        bidding: '',
+                        hands: '',
+                        content: ''
+                    }];
+                }
+
+                renderDeals(note.deals);
+                
+                document.querySelectorAll('.note-item').forEach(el => {
+                    el.classList.toggle('active', el.dataset.id === id);
+                });
+            }
+        }
+
+        function onTitleInput(val) {
+            if (!currentNoteId) return;
+            const activeItem = document.querySelector(`.note-item[data-id="${currentNoteId}"] .note-title-display`);
+            if (activeItem) activeItem.innerText = val || '未命名主題';
+        }
+
+        function renderDeals(deals) {
+            const container = document.getElementById('deals-container');
+            container.innerHTML = '';
+
+            deals.forEach((deal, idx) => {
+                const card = document.createElement('div');
+                card.className = 'deal-card';
+                card.dataset.dealId = deal.id;
+
+                const dealer = deal.dealer || 'N';
+                const vul = deal.vulnerability || 'None';
+
+                card.innerHTML = `
+                    <div class="deal-header">
+                        <span style="color:#fac400; font-weight:bold;">牌局 #${idx + 1}</span>
+                        <div>
+                            <button class="btn btn-dark" onclick="toggleInputPanel('${deal.id}')">✏️ 顯示/隱藏輸入欄 (Ctrl+E)</button>
+                            <button class="btn btn-red" style="padding: 4px 8px;" onclick="removeDealItem('${deal.id}')">🗑️ 刪除此牌局</button>
+                        </div>
+                    </div>
+
+                    <div class="input-toggle-area" id="input-area-${deal.id}" style="display: none;">
+                        <div style="display: flex; gap: 15px;">
+                            <div class="input-group" style="flex: 1;">
+                                <label>開叫家 (Dealer)：</label>
+                                <select class="deal-dealer-input" onchange="updateDealPreview('${deal.id}')">
+                                    <option value="N" ${dealer === 'N' ? 'selected' : ''}>北家 (North)</option>
+                                    <option value="E" ${dealer === 'E' ? 'selected' : ''}>東家 (East)</option>
+                                    <option value="S" ${dealer === 'S' ? 'selected' : ''}>南家 (South)</option>
+                                    <option value="W" ${dealer === 'W' ? 'selected' : ''}>西家 (West)</option>
+                                </select>
+                            </div>
+                            <div class="input-group" style="flex: 1;">
+                                <label>身價 (Vulnerability)：</label>
+                                <select class="deal-vul-input" onchange="updateDealPreview('${deal.id}')">
+                                    <option value="None" ${vul === 'None' ? 'selected' : ''}>雙無 (Neither Vul)</option>
+                                    <option value="NS" ${vul === 'NS' ? 'selected' : ''}>南北有身價 (N/S Vul)</option>
+                                    <option value="EW" ${vul === 'EW' ? 'selected' : ''}>東西有身價 (E/W Vul)</option>
+                                    <option value="Both" ${vul === 'Both' ? 'selected' : ''}>雙方有身價 (Both Vul)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>叫牌序列 (支援貼上內含身價與開叫的文字)：</label>
+                            <input type="text" class="deal-bidding-input" value="${deal.bidding || ''}" oninput="handleBiddingInput('${deal.id}')">
+                        </div>
+                        <div class="input-group">
+                            <div style="display:flex; justify-content:space-between;">
+                                <label>手牌 JSON 字串：</label>
+                                <button class="btn btn-green" style="padding: 2px 8px; font-size: 11px;" onclick="importHandsToDeal('${deal.id}')">📥 從發牌器帶入</button>
+                            </div>
+                            <input type="text" class="deal-hands-input" value='${deal.hands || ''}' oninput="updateDealPreview('${deal.id}')">
+                        </div>
+                    </div>
+
+                    <div class="hand-preview-table" id="hand-preview-area-${deal.id}">
+                        <div class="pos-box pos-north"><div class="pos-title">北 (N)</div><div id="preview-${deal.id}-north"></div></div>
+                        <div class="pos-box pos-west"><div class="pos-title">西 (W)</div><div id="preview-${deal.id}-west"></div></div>
+                        <div class="pos-center" id="preview-${deal.id}-center"></div>
+                        <div class="pos-box pos-east"><div class="pos-title">東 (E)</div><div id="preview-${deal.id}-east"></div></div>
+                        <div class="pos-box pos-south"><div class="pos-title">南 (S)</div><div id="preview-${deal.id}-south"></div></div>
+                    </div>
+
+                    <div class="input-group">
+                        <label>筆記與特約說明：</label>
+                        <textarea class="deal-content-input" rows="3">${deal.content || ''}</textarea>
+                    </div>
+                `;
+
+                container.appendChild(card);
+                updateDealPreview(deal.id);
+            });
+        }
+
+        // 自動解析剪貼簿內含的【身價】、【開叫】、【叫續】
+        function handleBiddingInput(dealId) {
+            const card = document.querySelector(`[data-deal-id="${dealId}"]`);
+            if (!card) return;
+
+            let rawVal = card.querySelector('.deal-bidding-input').value;
+
+            if (rawVal.includes('【身價】') || rawVal.includes('【開叫】') || rawVal.includes('【叫續】') || rawVal.includes('【叫牌】')) {
+                // 自動拆解身價
+                const vulMatch = rawVal.match(/【身價】\s*:\s*([^【]+)/);
+                if (vulMatch) {
+                    const vStr = vulMatch[1].trim();
+                    const vulSelect = card.querySelector('.deal-vul-input');
+                    if (vStr.includes('雙無') || vStr.includes('無身價')) vulSelect.value = 'None';
+                    else if (vStr.includes('雙有') || vStr.includes('有身價')) vulSelect.value = 'Both';
+                    else if (vStr.includes('南北')) vulSelect.value = 'NS';
+                    else if (vStr.includes('東西')) vulSelect.value = 'EW';
+                }
+
+                // 自動拆解開叫家
+                const dealerMatch = rawVal.match(/【開叫】\s*:\s*([^【]+)/);
+                if (dealerMatch) {
+                    const dStr = dealerMatch[1].trim();
+                    const dealerSelect = card.querySelector('.deal-dealer-input');
+                    if (dStr.includes('北')) dealerSelect.value = 'N';
+                    else if (dStr.includes('東')) dealerSelect.value = 'E';
+                    else if (dStr.includes('南')) dealerSelect.value = 'S';
+                    else if (dStr.includes('西')) dealerSelect.value = 'W';
+                }
+
+                // 自動拆解叫牌過程
+                const bidMatch = rawVal.match(/【叫續】\s*:\s*(.*)/) || rawVal.match(/【叫牌】\s*:\s*(.*)/);
+                if (bidMatch) {
+                    card.querySelector('.deal-bidding-input').value = bidMatch[1].trim();
+                }
+            }
+
+            updateDealPreview(dealId);
+        }
+
+        function toggleInputPanel(dealId) {
+            const el = document.getElementById(`input-area-${dealId}`);
+            if (el) el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        function toggleAllInputs() {
+            const inputs = document.querySelectorAll('.input-toggle-area');
+            if (inputs.length === 0) return;
+            const targetState = inputs[0].style.display === 'none' ? 'flex' : 'none';
+            inputs.forEach(el => el.style.display = targetState);
+        }
+
+        function addDealItem() {
+            if (!currentNoteId) return;
+            const note = masterData.notes.find(n => n.id === currentNoteId);
+            if (note) {
+                note.deals.push({ id: 'd_' + Date.now(), dealer: 'N', vulnerability: 'None', bidding: '', hands: '', content: '' });
+                renderDeals(note.deals);
+                updateSidebarCount(currentNoteId, note.deals.length);
+            }
+        }
+
+        function removeDealItem(dealId) {
+            const note = masterData.notes.find(n => n.id === currentNoteId);
+            if (note) {
+                note.deals = note.deals.filter(d => d.id !== dealId);
+                renderDeals(note.deals);
+                updateSidebarCount(currentNoteId, note.deals.length);
+            }
+        }
+
+        function updateSidebarCount(noteId, count) {
+            const el = document.querySelector(`.note-item[data-id="${noteId}"] .note-count-display`);
+            if (el) el.innerText = `包含 ${count} 個牌局`;
+        }
+
+        function importHandsToDeal(dealId) {
+            const handsStr = localStorage.getItem('advance_current_hands');
+            if (handsStr) {
+                const card = document.querySelector(`[data-deal-id="${dealId}"]`);
+                card.querySelector('.deal-hands-input').value = handsStr;
+                updateDealPreview(dealId);
+            } else {
+                showToast("⚠️ 找不到發牌紀錄", true);
+            }
+        }
+
+        function updateDealPreview(dealId) {
+            const card = document.querySelector(`[data-deal-id="${dealId}"]`);
+            if (!card) return;
+
+            const dealer = card.querySelector('.deal-dealer-input').value;
+            const vul = card.querySelector('.deal-vul-input').value;
+            const biddingText = card.querySelector('.deal-bidding-input').value;
+            const handsStr = card.querySelector('.deal-hands-input').value;
+            const centerContainer = document.getElementById(`preview-${dealId}-center`);
+
+            // 計算身價（有身價者標頭顯示為紅色）
+            const isNsVul = (vul === 'NS' || vul === 'Both');
+            const isEwVul = (vul === 'EW' || vul === 'Both');
+
+            const classW = isEwVul ? 'vul-red' : '';
+            const classN = isNsVul ? 'vul-red' : '';
+            const classE = isEwVul ? 'vul-red' : '';
+            const classS = isNsVul ? 'vul-red' : '';
+
+            let html = `
+                <div class="center-bidding-wrapper">
+                    <div class="bidding-grid">
+                        <div class="bidding-grid-header ${classW}">西</div>
+                        <div class="bidding-grid-header ${classN}">北</div>
+                        <div class="bidding-grid-header ${classE}">東</div>
+                        <div class="bidding-grid-header ${classS}">南</div>
+            `;
+
+            // 依開叫家計算對齊填空的格子位移 (順序：W=0, N=1, E=2, S=3)
+            const dealerOrder = { 'W': 0, 'N': 1, 'E': 2, 'S': 3 };
+            const offset = dealerOrder[dealer] || 0;
+
+            // 填入完全空白的佔位格（不寫任何字）
+            for (let i = 0; i < offset; i++) {
+                html += `<div class="bid-cell-box empty"></div>`;
+            }
+
+            if (biddingText.trim()) {
+                const bids = biddingText.replace(/\n/g, ',').split(',').map(b => b.trim()).filter(b => b);
+
+                // 填入叫牌內容
+                bids.forEach(bid => {
+                    const cls = (bid.startsWith('(') && bid.endsWith(')')) ? 'opponent' : 'teammate';
+                    let coloredBid = bid.replace(/S/g, '♠').replace(/H/g, '♥').replace(/D/g, '♦').replace(/C/g, '♣')
+                        .replace(/♠/g, '<span style="color:#3e52b8">♠</span>')
+                        .replace(/♥/g, '<span style="color:#e84c3d">♥</span>')
+                        .replace(/♦/g, '<span style="color:#fac400">♦</span>')
+                        .replace(/♣/g, '<span style="color:#68b04d">♣</span>');
+                    html += `<div class="bid-cell-box ${cls}">${coloredBid}</div>`;
+                });
+            }
+
+            html += `</div></div>`;
+            centerContainer.innerHTML = html;
+
+            // 手牌渲染
+            try {
+                if (handsStr.trim()) {
+                    const handData = JSON.parse(handsStr);
+                    ['north', 'south', 'east', 'west'].forEach(pos => {
+                        renderHandCards(dealId, pos, handData[pos]);
+                    });
+                } else {
+                    ['north', 'south', 'east', 'west'].forEach(pos => {
+                        const target = document.getElementById(`preview-${dealId}-${pos}`);
+                        if (target) target.innerHTML = '';
+                    });
+                }
+            } catch (e) {}
+        }
+
+        function renderHandCards(dealId, pos, cardsArray) {
+            const target = document.getElementById(`preview-${dealId}-${pos}`);
+            if (!target) return;
+            target.innerHTML = '';
+            if (!cardsArray || cardsArray.length === 0) return;
+
+            const suitSymbols = ['♠', '♥', '♦', '♣'];
+            const suitColors = { '♠': '#3e52b8', '♥': '#e84c3d', '♦': '#fac400', '♣': '#68b04d' };
+            const suitNames = { '♠': 'spade', '♥': 'heart', '♦': 'diamond', '♣': 'club' };
+            const rankOrder = { 'A': 14, 'K': 13, 'Q': 12, 'J': 11, '10': 10, '9': 9, '8': 8, '7': 7, '6': 6, '5': 5, '4': 4, '3': 3, '2': 2 };
+
+            suitSymbols.forEach(sSymbol => {
+                const filtered = cardsArray.filter(c => c.suit === sSymbol).sort((a, b) => rankOrder[b.rank] - rankOrder[a.rank]);
+                const row = document.createElement('div');
+                row.className = 'hand-suit-row';
+                
+                const indicator = document.createElement('div');
+                indicator.className = 'suit-indicator';
+                indicator.style.color = suitColors[sSymbol];
+                indicator.innerText = sSymbol;
+                row.appendChild(indicator);
+
+                if (filtered.length > 0) {
+                    filtered.forEach(cardData => {
+                        const card = document.createElement('div');
+                        card.className = `card ${suitNames[sSymbol]}-suit mini-layout`;
+                        card.setAttribute('data-suit', sSymbol);
+                        card.innerHTML = `<div class="label-box"><span class="rank-text">${cardData.rank}</span></div>`;
+                        row.appendChild(card);
+                    });
+                } else {
+                    const emptyDash = document.createElement('span');
+                    emptyDash.style.color = '#666';
+                    emptyDash.style.fontSize = '12px';
+                    emptyDash.innerText = '—';
+                    row.appendChild(emptyDash);
+                }
+                target.appendChild(row);
+            });
+        }
+
+        function addNewNote() {
+            const newId = 'note_' + Date.now();
+            masterData.notes.unshift({
+                id: newId,
+                title: "新主題系統",
+                deals: [{ id: 'd_' + Date.now(), dealer: 'N', vulnerability: 'None', bidding: "", hands: "", content: "" }]
+            });
+            renderNoteList();
+            loadNoteIntoEditor(newId);
+        }
+
+        async function saveCurrentNote() {
+            if (!fileHandle || !currentNoteId) return;
+
+            const noteIndex = masterData.notes.findIndex(n => n.id === currentNoteId);
+            if (noteIndex !== -1) {
+                masterData.notes[noteIndex].title = document.getElementById('edit-title').value;
+                
+                const dealCards = document.querySelectorAll('.deal-card');
+                const updatedDeals = [];
+                
+                dealCards.forEach(card => {
+                    updatedDeals.push({
+                        id: card.dataset.dealId,
+                        dealer: card.querySelector('.deal-dealer-input').value,
+                        vulnerability: card.querySelector('.deal-vul-input').value,
+                        bidding: card.querySelector('.deal-bidding-input').value,
+                        hands: card.querySelector('.deal-hands-input').value,
+                        content: card.querySelector('.deal-content-input').value
+                    });
+                });
+
+                masterData.notes[noteIndex].deals = updatedDeals;
+
+                await writeToFile();
+                showToast("✓ 筆記內容已儲存");
+            }
+        }
+
+        async function deleteCurrentNote() {
+            if (!confirm("確定要刪除整個主題嗎？")) return;
+            masterData.notes = masterData.notes.filter(n => n.id !== currentNoteId);
+            currentNoteId = null;
+            document.getElementById('editor-content').style.display = 'none';
+            document.getElementById('empty-state').style.display = 'flex';
+            await writeToFile();
+            renderNoteList();
+            showToast("🗑️ 主題已刪除");
+        }
+
+        async function writeToFile() {
+            try {
+                masterData.last_updated = new Date().toISOString();
+                const writable = await fileHandle.createWritable();
+                await writable.write(JSON.stringify(masterData, null, 4));
+                await writable.close();
+            } catch (err) { 
+                showToast("⚠️ 寫入檔案失敗", true); 
+            }
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast-notification');
+            toast.innerText = msg;
+            toast.style.background = isError ? '#ff4757' : '#2ecc71';
+            toast.style.color = isError ? '#fff' : '#111';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+    </script>
+</body>
+</html>

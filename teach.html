@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/teach.css">
+    <style>
+        :root {
+            --primary: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --accent-green: #10b981;
+            --text-gray: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: "Segoe UI", "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<script src="js/cardset.js"></script>
+<body>
+
+<div class="app-container">
+
+    <div class="header">
+        <a href="lobby.html" class="lobby-btn">
+        <span>←</span> 返回 Lobby
+        </a>
+        <h1>叫牌練習器</h1>
+        <p class="subtitle">請選擇叫牌練習關卡</p>
+    </div>
+    
+    <div class="level-list">
+        <div class="level-card" id="lvl-natural" onclick="openLevel('natural')">
+            <div class="level-info">
+                <h3>Level 1: 自然制基礎</h3>
+                <p id="stat-natural">未完成</p>
+            </div>
+            <div class="status-badge"></div>
+        </div>
+
+        <div class="level-card" id="lvl-simpleoneNT" onclick="openLevel('simpleoneNT')">
+            <div class="level-info">
+                <h3>Level 2: 基礎1NT</h3>
+                <p id="stat-gf21">未完成</p>
+            </div>
+            <div class="status-badge"></div>
+        </div>
+
+        <div class="level-card" id="lvl-preempt" onclick="openLevel('preempt')">
+            <div class="level-info">
+                <h3>Level 3: 竄叫234定律</h3>
+                <p id="stat-preempt">未完成</p>
+            </div>
+            <div class="status-badge"></div>
+        </div>
+
+        <div class="level-card" id="lvl-major" onclick="openLevel('major')">
+            <div class="level-info">
+                <h3>Level 4: 高花後續</h3>
+                <p id="stat-preempt">未完成</p>
+            </div>
+            <div class="status-badge"></div>
+        </div>
+
+        <div class="level-card" id="lvl-minor" onclick="openLevel('minor')">
+            <div class="level-info">
+                <h3>Level 5: 低花後續</h3>
+                <p id="stat-preempt">未完成</p>
+            </div>
+            <div class="status-badge"></div>
+        </div>
+
+        <div class="level-card" id="lvl-other" onclick="openLevel('other')">
+            <div class="level-info">
+                <h3>Level 6: 其他</h3>
+                <p id="stat-preempt">未完成</p>
+            </div>
+            <div class="status-badge"></div>
+        </div>
+        <div class="level-card" id="lvl-advance" onclick="openLevel('advance')">
+            <div class="level-info">
+                <h3>Level 7: 進階練習</h3>
+                <p id="stat-preempt">未完成</p>
+            </div>
+            <div class="status-badge"></div>
+        </div>
+    </div>
+</div>
+
+<div id="overlay" class="overlay">
+    <button class="btn-back" onclick="closeLevel()">← 返回地圖</button>
+    <h2 id="level-title" style="color: var(--primary);">關卡標題</h2>
+    <p style="color: var(--text-gray); margin-bottom: 30px;">選擇你想練習的情境：</p>
+    
+    <div id="sub-level-container" style="flex-grow: 1; overflow-y: auto;">
+    </div>
+</div>
+
+<script>
+    // 叫牌練習題庫
+    const levelConfig = {
+        natural: {
+            folder: "natural",
+            name: "自然制基礎",
+            tasks: [
+                { name: "自然制規則", type: "theory" },
+                { name: "練習(一)", type: "practice" },
+                { name: "練習(二)", type: "practice" },
+                { name: "練習(三)", type: "practice" },
+                { name: "練習(四)", type: "practice" },
+                { name: "練習(五)", type: "practice" },
+                { name: "練習(六)", type: "practice" },
+                { name: "練習(七)", type: "practice" },
+                { name: "練習(八)", type: "practice" },
+                { name: "練習(九)", type: "practice" },
+                { name: "練習(十)", type: "practice" },
+                { name: "練習(十一)", type: "practice" },
+                { name: "練習(十二)", type: "practice" },
+                { name: "練習(十三)", type: "practice" },
+                { name: "練習(十四)", type: "practice" },
+                { name: "練習(十五)", type: "practice" },
+                { name: "練習集", type: "practiceLot" },
+            ]
+        },
+        simpleoneNT: {
+            folder: "simpleoneNT",
+            name: "1NT 簡單後續",
+            tasks: [
+                { name: "1NT規則", type: "theory" },
+                { name: "練習(一)", type: "practice" },
+                { name: "練習(二)", type: "practice" },
+                { name: "練習(三)", type: "practice" },
+                { name: "練習(四)", type: "practice" },
+                { name: "練習(五)", type: "practice" },
+                { name: "練習(六)", type: "practice" },
+                { name: "練習(七)", type: "practice" },
+                { name: "練習(八)", type: "practice" },
+                { name: "練習(九)", type: "practice" },
+                { name: "練習(十)", type: "practice" },
+                { name: "練習(十一)", type: "practice" },
+                { name: "練習(十二)", type: "practice" },
+                { name: "練習(十三)", type: "practice" },
+                { name: "練習(十四)", type: "practice" },
+                { name: "練習(十五)", type: "practice" },
+                { name: "練習集", type: "practiceLot" },
+            ]
+        },
+        preempt: {
+            folder: "preempt",
+            name: "竄叫 234 定律",
+            tasks: [
+                { name: "234定律&原理", type: "theory" },
+                { name: "練習(一)", type: "practice" },
+                { name: "練習(二)", type: "practice" },
+                { name: "練習(三)", type: "practice" },
+                { name: "練習(四)", type: "practice" },
+                { name: "練習(五)", type: "practice" },
+                { name: "練習(六)", type: "practice" },
+                { name: "練習(七)", type: "practice" },
+                { name: "練習(八)", type: "practice" },
+                { name: "練習(九)", type: "practice" },
+                { name: "練習(十)", type: "practice" },
+                { name: "練習(十一)", type: "practice" },
+                { name: "練習(十二)", type: "practice" },
+                { name: "練習(十三)", type: "practice" },
+                { name: "練習(十四)", type: "practice" },
+                { name: "練習(十五)", type: "practice" },
+                { name: "練習集", type: "practiceLot" },
+            ]
+        },
+        major:{
+            folder: "major",
+            name: "高花後續",
+            tasks: [
+                { name: "迫叫1NT", type: "theory" },
+                { name: "練習(一)", type: "practice" },
+                { name: "練習(二)", type: "practice" },
+                { name: "二蓋一", type: "theory" },
+                { name: "練習(三)", type: "practice" },
+                { name: "練習(四)", type: "practice" },
+                { name: "Bergen", type: "theory" },
+                { name: "練習(五)", type: "practice" },
+                { name: "練習(六)", type: "practice" },
+                { name: "練習集", type: "practiceLot" },
+            ]
+        },
+        minor:{
+            folder: "minor",
+            name: "低花後續",
+            tasks: [
+                { name: "1m後續", type: "theory" },
+                { name: "1m邀請", type: "theory" },
+                { name: "練習(一)", type: "practice" },
+                { name: "練習(二)", type: "practice" },
+                { name: "進階", type: "divider" },
+                { name: "2way", type: "theory" },
+                { name: "練習(三)", type: "practice" },
+                { name: "練習(四)", type: "practice" },
+                { name: "1m1M2NT", type: "theory" },
+                { name: "練習(五)", type: "practice" },
+                { name: "練習(六)", type: "practice" },
+                { name: "100分", type: "theory" },
+                { name: "練習(七)", type: "practice" },
+                { name: "練習(八)", type: "practice" },
+                { name: "練習集", type: "practiceLot" },
+            ]
+        },
+        other:{
+            folder: "other",
+            name: "其他後續",
+            tasks: [
+                { name: "2NT", type: "theory" },
+                { name: "練習(一)", type: "practice" },
+                { name: "練習(二)", type: "practice" },
+                { name: "練習(三)", type: "practice" },
+                { name: "練習(四)", type: "practice" },
+                { name: "練習(五)", type: "practice" },
+                { name: "練習(六)", type: "practice" },
+                { name: "練習(七)", type: "practice" },
+                { name: "練習(八)", type: "practice" },
+                { name: "練習(九)", type: "practice" },
+                { name: "練習(十)", type: "practice" },
+                { name: "練習(十一)", type: "practice" },
+                { name: "練習(十二)", type: "practice" },
+                { name: "練習(十三)", type: "practice" },
+                { name: "練習(十四)", type: "practice" },
+                { name: "練習(十五)", type: "practice" },
+                { name: "練習集", type: "practiceLot" },
+            ]
+        },
+        advance:{
+            folder: "advance",
+            name: "進階",
+            tasks: [
+                { name: "練習(一)", type: "practice" },
+                { name: "練習(二)", type: "practice" },
+                { name: "練習(三)", type: "practice" },
+                { name: "練習(四)", type: "practice" },
+                { name: "練習(五)", type: "practice" },
+                { name: "練習(六)", type: "practice" },
+                { name: "練習(七)", type: "practice" },
+                { name: "練習(八)", type: "practice" },
+                { name: "練習(九)", type: "practice" },
+                { name: "練習(十)", type: "practice" },
+                { name: "練習(十一)", type: "practice" },
+                { name: "練習(十二)", type: "practice" },
+                { name: "練習(十三)", type: "practice" },
+                { name: "練習(十四)", type: "practice" },
+                { name: "練習(十五)", type: "practice" },
+                { name: "練習集", type: "practiceLot" },
+            ]
+        }
+    };
+
+    let selectedLevelId = null;
+    let completedLevels = JSON.parse(localStorage.getItem('completed_levels')) || [];
+
+    function init() {
+        completedLevels.forEach(id => {
+            const card = document.getElementById(`lvl-${id}`);
+            if (card) {
+                card.classList.add('completed');
+                document.getElementById(`stat-${id}`).innerText = "訓練已完成 ✓";
+                document.getElementById(`stat-${id}`).style.color = "#10b981";
+            }
+        });
+    }
+
+    
+   /*function openLevel(id) {
+        selectedLevelId = id;
+        const config = levelConfig[id];
+        const folderName = config.folder;
+        const container = document.getElementById('sub-level-container');
+        container.innerHTML = '';
+
+        config.tasks.forEach(task => {
+            const div = document.createElement('div');
+            div.className = 'sub-level-item';
+            
+            let prefix = "";
+            let themeColor = "";
+            if (task.type === 'theory') { prefix = "📘 規則："; themeColor = "#3b82f6"; }
+            else if (task.type === 'practice') { prefix = "📝 練習："; themeColor = "#fac400"; }
+            else if (task.type === 'practiceLot') { prefix = "🔥 綜合題庫："; themeColor = "#e84c3d"; }
+
+            div.innerHTML = `<span style="color:${themeColor}">${prefix}${task.name}</span><span class="play-icon">▶</span>`;
+            
+            div.onclick = async () => {
+                const filePath = `data/card/${folderName}/${task.name}.json`;
+                const encodedPath = encodeURIComponent(filePath);
+
+                if (task.type === 'theory') {
+                    // 前往發牌動畫頁 (隨機亂丟)沒做成
+                    window.location.href = `${task.name}.html`;
+                } 
+                else if (task.type === 'practice') {
+                    // 直接進入叫牌練習器 (載入單一題目)
+                    goToTask(folderName,task.name)
+                    
+                }
+                else if (task.type === 'practiceLot') {
+                    goToTask(folderName,task.name)
+                }
+            };
+            container.appendChild(div);
+        });
+        document.getElementById('overlay').classList.add('active');
+    }*/
+    function openLevel(id) {
+        selectedLevelId = id;
+        const config = levelConfig[id];
+        const folderName = config ? config.folder : id;
+        const container = document.getElementById('sub-level-container');
+        container.innerHTML = '';
+
+        // 設定關卡標題
+        if (config && config.name) {
+            document.getElementById('level-title').innerText = config.name;
+        }
+
+        // 取得 cardset 中該單元的資料
+        const folderData = (typeof cardset !== 'undefined' && cardset[folderName]) ? cardset[folderName] : {};
+
+        config.tasks.forEach(task => {
+            // 1. 分隔線 (Divider)
+            if (task.type === 'divider') {
+                const divider = document.createElement('div');
+                divider.style.display = 'flex';
+                divider.style.alignItems = 'center';
+                divider.style.marginTop = '20px';
+                divider.style.marginBottom = '12px';
+                divider.style.color = 'var(--primary)';
+                divider.style.fontSize = '14px';
+                divider.style.fontWeight = 'bold';
+                divider.style.letterSpacing = '1px';
+                divider.innerHTML = `<span>${task.name}</span><div style="flex: 1; height: 1px; background: #334155; margin-left: 15px;"></div>`;
+                container.appendChild(divider);
+                return;
+            }
+
+            // 2. 觀念規則 (Theory) - 規則說明不受題庫影響，一律顯示
+            if (task.type === 'theory') {
+                const div = document.createElement('div');
+                div.className = 'sub-level-item';
+                div.innerHTML = `<span style="color:#3b82f6">📘 規則：${task.name}</span><span class="play-icon">▶</span>`;
+                div.onclick = () => {
+                    window.location.href = `${task.name}.html`;
+                };
+                container.appendChild(div);
+                return;
+            }
+
+            // 3. 練習與綜合題庫 (Practice / PracticeLot)
+            let taskKey = task.name;
+            if (!folderData[taskKey] && task.type === 'practiceLot' && folderData["練習集"]) {
+                taskKey = "練習集";
+            }
+
+            const taskData = folderData[taskKey];
+            let count = 0;
+            let hasData = false;
+
+            if (taskData) {
+                if (Array.isArray(taskData)) {
+                    // 陣列（如 advance 的 練習集）
+                    count = taskData.length;
+                    hasData = count > 0;
+                } else if (typeof taskData === 'object') {
+                    // 單一題目物件，確認裡面是否有內容
+                    hasData = Object.keys(taskData).length > 0;
+                    count = hasData ? 1 : 0;
+                }
+            } else if (task.type === 'practiceLot') {
+                // 綜合題庫：統計該 folder 下所有有內容的練習題總數
+                const validKeys = Object.keys(folderData).filter(k => {
+                    const item = folderData[k];
+                    if (Array.isArray(item)) return item.length > 0;
+                    return item && typeof item === 'object' && Object.keys(item).length > 0;
+                });
+                count = validKeys.length;
+                hasData = count > 0;
+            }
+
+            // 關鍵修改：若無題目或內容為空 {}，直接隱藏（不產生任何 DOM 元素）
+            if (!hasData) {
+                return;
+            }
+
+            const div = document.createElement('div');
+            div.className = 'sub-level-item';
+
+            let prefix = task.type === 'practiceLot' ? "🔥 綜合題庫：" : "📝 練習：";
+            let themeColor = task.type === 'practiceLot' ? "#e84c3d" : "#fac400";
+            
+            let countText = (count > 1 || task.type === 'practiceLot' || Array.isArray(taskData)) 
+                ? ` <span style="font-size: 0.85em; opacity: 0.85; margin-left: 6px;">(${count} 題)</span>` 
+                : "";
+
+            div.innerHTML = `<span style="color:${themeColor}">${prefix}${task.name}${countText}</span><span class="play-icon">▶</span>`;
+            div.onclick = () => {
+                goToTask(folderName, taskKey);
+            };
+
+            container.appendChild(div);
+        });
+
+        document.getElementById('overlay').classList.add('active');
+    }
+    function goToTask(folder, name) {
+        const path = `bidding(teaching).html?folder=${encodeURIComponent(folder)}&name=${encodeURIComponent(name)}`;
+        window.location.href = path;
+    }
+
+    function closeLevel() {
+        document.getElementById('overlay').classList.remove('active');
+    }
+
+
+    function startTraining() {
+        if (!selectedLevelId) return alert("請先選擇關卡");
+        
+        // 假設你的檔名規則是 level-1.json 等
+        // 這裡我們直接傳遞檔名給發牌頁面
+        const fileName = `${selectedLevelId}.json`; 
+        window.location.href = `dealing(random).html?file=${fileName}`;
+    }
+    
+
+    init();
+</script>
+
+</body>
+</html>

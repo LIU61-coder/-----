@@ -1,0 +1,1609 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>橋牌牌局與分支叫牌編輯器 (Bridge Cardset Visualizer & Editor)</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Vue 3 CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            felt: {
+              DEFAULT: '#133e2b',
+              dark: '#0c281c',
+              border: '#1f593f',
+              light: '#1a4e37'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #10b981;
+    }
+
+    .card-chip {
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+      transition: transform 0.15s ease;
+    }
+    .card-chip:hover {
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+  <div id="app" class="flex flex-col min-h-screen">
+
+    <!-- ================= HEADER / TOOLBAR ================= -->
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-30 px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center shadow-lg shadow-emerald-900/40 text-white font-bold text-xl">
+          ♠
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold tracking-wide text-white flex items-center gap-2">
+            橋牌牌局與分支叫牌編輯器
+            <span class="text-[11px] font-normal px-2 py-0.5 rounded-md bg-emerald-950 text-emerald-400 border border-emerald-800/60">
+              Bridge Visualizer
+            </span>
+          </h1>
+          <p class="text-xs text-slate-400">樹狀叫牌自動分支展平 • 綠底牌桌 • 單局複製匯出 • 無障礙標籤編輯</p>
+        </div>
+      </div>
+
+      <!-- Header Action Buttons -->
+      <div class="flex items-center gap-2">
+        <button
+          @click="openImportMergeModal"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs shadow-md transition"
+        >
+          <i class="fa-solid fa-file-import"></i> 匯入牌局檔 (.test / .js / .json)
+        </button>
+        <button
+          v-if="hasData"
+          @click="openExportModal"
+          class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium transition"
+        >
+          <i class="fa-solid fa-code"></i> 匯出全牌組 (JS)
+        </button>
+      </div>
+    </header>
+
+    <!-- ================= VIEW MODE & SEARCH CONTROLS ================= -->
+    <div v-if="hasData" class="border-b border-slate-800/80 bg-slate-900/50 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Left: View Mode Toggle -->
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-slate-400 font-medium">檢視模式:</span>
+        <div class="bg-slate-950 p-0.5 rounded-lg border border-slate-800 flex items-center gap-1">
+          <button
+            @click="viewMode = 'folder'"
+            :class="[
+              'px-3 py-1 rounded-md text-xs font-medium transition flex items-center gap-1.5',
+              viewMode === 'folder'
+                ? 'bg-emerald-500 text-slate-950 font-bold shadow'
+                : 'text-slate-400 hover:text-slate-200'
+            ]"
+          >
+            <i class="fa-solid fa-folder-tree"></i> 按資料夾結構
+          </button>
+          <button
+            @click="viewMode = 'categoryTag'"
+            :class="[
+              'px-3 py-1 rounded-md text-xs font-medium transition flex items-center gap-1.5',
+              viewMode === 'categoryTag'
+                ? 'bg-emerald-500 text-slate-950 font-bold shadow'
+                : 'text-slate-400 hover:text-slate-200'
+            ]"
+          >
+            <i class="fa-solid fa-tags"></i> 按 Category 標籤分類
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Search Bar -->
+      <div class="relative min-w-[240px] flex-1 max-w-xs">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+        <input
+          type="text"
+          placeholder="搜尋 Category、標題或叫牌內容..."
+          v-model="searchQuery"
+          class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 transition"
+        />
+      </div>
+
+    </div>
+
+    <!-- ================= CATEGORY / FOLDER QUICK SELECT BAR ================= -->
+    <div v-if="hasData" class="border-b border-slate-800/60 bg-slate-950 px-4 py-2 flex items-center justify-between gap-2 overflow-x-auto scrollbar-none">
+      
+      <!-- Pills Row -->
+      <div class="flex items-center gap-1.5 overflow-x-auto">
+        <!-- Folder View Sub-pills -->
+        <template v-if="viewMode === 'folder'">
+          <button
+            v-for="folderKey in folderKeys"
+            :key="folderKey"
+            @click="selectedFolderKey = folderKey"
+            :class="[
+              'px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap flex items-center gap-1.5',
+              selectedFolderKey === folderKey
+                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 font-bold'
+                : 'bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-800'
+            ]"
+          >
+            <i class="fa-solid fa-folder text-[10px]"></i>
+            <span>{{ folderKey }}</span>
+            <span class="text-[10px] opacity-70">({{ getFolderBoardCount(folderKey) }})</span>
+          </button>
+
+          <!-- Add New Folder Button -->
+          <button
+            @click="addNewFolder"
+            class="px-2.5 py-1 rounded-full text-xs bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 flex items-center gap-1 transition"
+            title="新增資料夾"
+          >
+            <i class="fa-solid fa-plus text-[10px]"></i> 新增資料夾
+          </button>
+        </template>
+
+        <!-- Category Tag Sub-pills -->
+        <template v-else>
+          <button
+            v-for="tag in allCategoryTags"
+            :key="tag"
+            @click="selectedCategoryTag = tag"
+            :class="[
+              'px-3 py-1 rounded-full text-xs font-medium transition whitespace-nowrap flex items-center gap-1.5',
+              selectedCategoryTag === tag
+                ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 font-bold'
+                : 'bg-slate-900 hover:bg-slate-800 text-slate-400 border border-slate-800'
+            ]"
+          >
+            <i class="fa-solid fa-tag text-[10px]"></i>
+            <span>{{ tag }}</span>
+            <span class="text-[10px] opacity-70">({{ getCategoryTagBoardCount(tag) }})</span>
+          </button>
+        </template>
+      </div>
+
+      <!-- Delete Folder Button (Folder Mode) -->
+      <div v-if="viewMode === 'folder' && selectedFolderKey" class="shrink-0">
+        <button
+          @click="deleteFolder(selectedFolderKey)"
+          class="px-2.5 py-1 rounded-lg text-xs bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-800/50 flex items-center gap-1.5 transition"
+          title="刪除目前選取的資料夾及其所有牌局"
+        >
+          <i class="fa-solid fa-folder-minus text-red-400 text-[11px]"></i>
+          <span>刪除資料夾 ({{ selectedFolderKey }})</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ================= MAIN CONTAINER ================= -->
+    <div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+
+      <!-- LANDING / EMPTY CARDSET STATE -->
+      <div v-if="!hasData" class="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-950 space-y-6">
+        <div class="w-20 h-20 rounded-3xl bg-slate-900 border border-slate-800 flex items-center justify-center text-4xl text-emerald-500 shadow-2xl">
+          ♠
+        </div>
+        <div class="max-w-md space-y-2">
+          <h2 class="text-xl font-bold text-white">尚未載入任何牌局資料</h2>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            請點選下方按鈕選擇您的 <code class="text-emerald-400 bg-slate-900 px-1 py-0.5 rounded">cardset.js</code>、<code class="text-emerald-400 bg-slate-900 px-1 py-0.5 rounded">.json</code> 或 <code class="text-emerald-400 bg-slate-900 px-1 py-0.5 rounded">.test</code> 檔案，或直接貼上程式碼匯入。
+          </p>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-3">
+          <button
+            @click="openImportMergeModal"
+            class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg transition flex items-center gap-2"
+          >
+            <i class="fa-solid fa-file-import text-sm"></i> 匯入牌局檔案 / 貼上程式碼
+          </button>
+          <button
+            @click="loadDemoSample"
+            class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-xs border border-slate-700 transition flex items-center gap-2"
+          >
+            <i class="fa-solid fa-vial text-sm text-amber-400"></i> 載入測試範例牌局
+          </button>
+        </div>
+      </div>
+
+      <!-- HAS DATA MAIN VIEW -->
+      <template v-else>
+        <!-- LEFT SIDEBAR: BOARD NAVIGATION TREE -->
+        <aside class="w-full lg:w-80 border-r border-slate-800/80 bg-slate-900/30 flex flex-col shrink-0 max-h-56 lg:max-h-none overflow-y-auto">
+          
+          <!-- Sidebar Header -->
+          <div class="p-3 border-b border-slate-800/60 flex items-center justify-between text-xs text-slate-400 font-medium bg-slate-900/50">
+            <span class="flex items-center gap-1.5 text-slate-300 font-semibold truncate">
+              <i :class="viewMode === 'folder' ? 'fa-solid fa-folder-tree text-emerald-400' : 'fa-solid fa-tags text-emerald-400'"></i>
+              {{ viewMode === 'folder' ? selectedFolderKey : selectedCategoryTag }} 牌局清單
+            </span>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">
+                {{ currentDisplayBoards.length }} 局
+              </span>
+              <button @click="addNewBoardToActiveContext" title="新增牌局" class="text-emerald-400 hover:text-emerald-300 text-xs">
+                <i class="fa-solid fa-plus-circle"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sidebar Board Items List -->
+          <div class="p-2 space-y-1 overflow-y-auto">
+            <div v-if="currentDisplayBoards.length === 0" class="p-4 text-center text-xs text-slate-500 space-y-2">
+              <div>此分類下目前無牌局</div>
+              <button @click="addNewBoardToActiveContext" class="px-3 py-1 rounded bg-emerald-600/80 hover:bg-emerald-500 text-white font-medium text-xs">
+                <i class="fa-solid fa-plus"></i> 在此新增牌局
+              </button>
+            </div>
+
+            <template v-for="item in currentDisplayBoards" :key="item.id">
+              
+              <!-- PRACTICE SET GROUP ACCORDION HEADER (folder view) -->
+              <div v-if="item.isGroupHeader" class="pt-2 pb-1 px-1">
+                <button
+                  @click="toggleGroupCollapse(item.groupKey)"
+                  class="w-full flex items-center justify-between px-2 py-1 rounded bg-slate-800/60 hover:bg-slate-800 text-xs text-slate-300 font-bold border border-slate-700/50"
+                >
+                  <span class="flex items-center gap-1.5">
+                    <i class="fa-solid" :class="collapsedGroups[item.groupKey] ? 'fa-chevron-right text-slate-500' : 'fa-chevron-down text-emerald-400'"></i>
+                    <i class="fa-solid fa-layer-group text-amber-400"></i>
+                    練習集 ({{ item.childCount }} 局)
+                  </span>
+                  <span class="text-[10px] text-slate-400 font-normal">展開 / 折疊</span>
+                </button>
+              </div>
+
+              <!-- INDIVIDUAL BOARD ITEM BUTTON WITH DIRECT TRASH ICON -->
+              <div
+                v-else
+                @click="selectedBoardId = item.id"
+                :class="[
+                  'w-full text-left p-2.5 rounded-lg text-xs transition flex items-center justify-between group cursor-pointer',
+                  item.isInPracticeSet ? 'ml-3 border-l-2 border-emerald-600/60' : '',
+                  selectedBoardId === item.id
+                    ? 'bg-gradient-to-r from-emerald-950/90 to-slate-800 border border-emerald-600/50 text-white font-medium shadow-md'
+                    : 'hover:bg-slate-800/60 text-slate-300 border border-transparent'
+                ]"
+              >
+                <div class="truncate pr-2 space-y-0.5 flex-1 min-w-0">
+                  <div class="font-semibold text-slate-200 truncate flex items-center gap-1.5">
+                    <i class="fa-solid fa-cards text-[10px]" :class="selectedBoardId === item.id ? 'text-emerald-400' : 'text-slate-500'"></i>
+                    <span class="truncate">{{ item.title }}</span>
+                  </div>
+                  <div class="text-[10.5px] text-slate-400 truncate flex items-center gap-2">
+                    <span class="text-emerald-400 font-mono">[{{ item.category }}]</span>
+                    <span class="truncate opacity-75">{{ item.displayLabel }}</span>
+                  </div>
+                </div>
+
+                <!-- Hover Trash Icon on Sidebar Item -->
+                <div class="flex items-center gap-1 shrink-0">
+                  <button
+                    @click.stop="deleteBoardByRef(item)"
+                    title="刪除此牌局"
+                    class="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-red-900/60 text-slate-500 hover:text-red-300 transition"
+                  >
+                    <i class="fa-solid fa-trash-can text-[11px]"></i>
+                  </button>
+                  <i class="fa-solid fa-chevron-right text-[10px]" :class="selectedBoardId === item.id ? 'text-emerald-400' : 'text-slate-600 group-hover:text-slate-400'"></i>
+                </div>
+              </div>
+
+            </template>
+          </div>
+        </aside>
+
+        <!-- RIGHT MAIN CONTENT: BOARD DETAILS & BRANCH VISUALIZER -->
+        <main class="flex-1 flex flex-col overflow-y-auto p-4 lg:p-6 space-y-6 bg-slate-950">
+          <div v-if="!activeBoard" class="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-500 space-y-3">
+            <i class="fa-solid fa-sitemap text-4xl text-slate-700"></i>
+            <p class="text-sm">請從左側點選牌局以檢視獨立分支與編輯</p>
+          </div>
+
+          <template v-else>
+            
+            <!-- BOARD HEADER & METADATA QUICK EDIT BAR -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
+              <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                
+                <!-- Title & Category Inline Edit -->
+                <div class="flex-1 min-w-[280px] space-y-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    
+                    <!-- Editable Category Tag Badge -->
+                    <div class="relative flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-md px-2 py-0.5">
+                      <i class="fa-solid fa-tag text-[10px]"></i>
+                      <span class="text-xs font-semibold text-slate-400">標籤:</span>
+                      <input
+                        type="text"
+                        v-model="activeBoard.metadata.category"
+                        placeholder="category"
+                        class="bg-transparent border-b border-dashed border-emerald-400 text-emerald-400 text-xs font-bold focus:outline-none focus:border-emerald-300 w-28 text-center"
+                      />
+                    </div>
+
+                    <!-- Editable Title -->
+                    <input
+                      type="text"
+                      v-model="activeBoard.metadata.title"
+                      placeholder="輸入牌局標題..."
+                      class="text-base sm:text-lg font-bold text-white bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 focus:outline-none focus:border-emerald-500 flex-1 min-w-[200px]"
+                    />
+                  </div>
+                </div>
+
+                <!-- Header Action Controls -->
+                <div class="flex items-center gap-2 flex-wrap">
+                  <!-- Duplicate Board Button -->
+                  <button
+                    @click="duplicateActiveBoard"
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-900/60 hover:bg-sky-800/80 border border-sky-700/80 text-xs text-sky-200 transition shadow"
+                    title="複製目前牌局出來獨立修改"
+                  >
+                    <i class="fa-solid fa-copy text-sky-400"></i> 複製此牌局
+                  </button>
+
+                  <!-- Export Single Board JSON Button -->
+                  <button
+                    @click="openSingleBoardExportModal"
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-900/60 hover:bg-teal-800/80 border border-teal-700/80 text-xs text-teal-200 transition shadow"
+                    title="匯出單局 JSON 檔"
+                  >
+                    <i class="fa-solid fa-file-code text-teal-400"></i> 單局 JSON
+                  </button>
+
+                  <!-- Edit Hands Button -->
+                  <button
+                    @click="openEditHandsModal"
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 transition"
+                  >
+                    <i class="fa-solid fa-pen-to-square text-emerald-400"></i> 編輯手牌
+                  </button>
+
+                  <!-- Direct Active Board Trash Button -->
+                  <button
+                    @click="deleteActiveBoard"
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-950/60 hover:bg-red-900/80 border border-red-800/80 text-xs text-red-200 font-medium transition shadow"
+                    title="刪除目前選取的牌局"
+                  >
+                    <i class="fa-solid fa-trash-can text-red-400"></i> 刪除此牌局
+                  </button>
+                </div>
+
+              </div>
+
+              <!-- Metadata Quick Selects (Dealer, Vulnerability) -->
+              <div class="flex flex-wrap items-center gap-4 text-xs text-slate-300 pt-1">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-slate-400">開叫者 (Dealer):</span>
+                  <select v-model="activeBoard.metadata.dealer" class="bg-slate-950 border border-slate-800 rounded px-2 py-0.5 text-emerald-400 font-bold focus:outline-none">
+                    <option value="北">北 (N)</option>
+                    <option value="東">東 (E)</option>
+                    <option value="南">南 (S)</option>
+                    <option value="西">西 (W)</option>
+                  </select>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                  <span class="text-slate-400">身價 (Vulnerability):</span>
+                  <select v-model="activeBoard.metadata.vulnerability" class="bg-slate-950 border border-slate-800 rounded px-2 py-0.5 text-amber-400 font-bold focus:outline-none">
+                    <option value="None">None (雙無)</option>
+                    <option value="Both">Both (雙有)</option>
+                    <option value="NS">NS (南北有)</option>
+                    <option value="EW">EW (東西有)</option>
+                    <option value="Favorable">Favorable (有利)</option>
+                    <option value="Unfavorable">Unfavorable (不利)</option>
+                  </select>
+                </div>
+
+                <div class="flex items-center gap-1.5 text-slate-400">
+                  <span>位置:</span>
+                  <span class="text-slate-200 font-mono">{{ activeBoardPathLabel }}</span>
+                </div>
+
+                <div class="flex items-center gap-1.5 ml-auto text-slate-400">
+                  <span>獨立分支數量:</span>
+                  <strong class="text-sky-400 font-bold">{{ unfoldedBranches.length }} 個</strong>
+                </div>
+              </div>
+
+              <!-- Warning Callouts Editor -->
+              <div class="pt-2 border-t border-slate-800/60 space-y-2">
+                <div class="flex items-center justify-between text-xs font-semibold text-amber-300">
+                  <span class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400"></i> 叫牌觀念與警示提示 (Warning Notes):
+                  </span>
+                  <button @click="addWarningNote" class="text-[11px] text-emerald-400 hover:underline">
+                    <i class="fa-solid fa-plus"></i> 新增提示
+                  </button>
+                </div>
+
+                <div v-if="!activeBoard.metadata.warning || activeBoard.metadata.warning.length === 0" class="text-[11px] text-slate-500 italic">
+                  無警示提示（點擊「新增提示」可加入重點觀念）
+                </div>
+
+                <div v-else class="space-y-1.5">
+                  <div
+                    v-for="(warnItem, wIdx) in activeBoard.metadata.warning"
+                    :key="wIdx"
+                    class="flex items-center gap-2 bg-amber-950/30 border border-amber-800/40 rounded-lg p-1.5 text-xs text-amber-200"
+                  >
+                    <span class="text-amber-400 font-bold text-[10px]">•</span>
+                    <input
+                      type="text"
+                      v-model="activeBoard.metadata.warning[wIdx]"
+                      class="flex-1 bg-transparent border-none text-xs text-amber-100 focus:outline-none"
+                    />
+                    <button @click="removeWarningNote(wIdx)" class="text-slate-500 hover:text-red-400 px-1 text-xs">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- HORIZONTAL SCROLLING CONTAINER FOR UNFOLDED BRANCH CARDS -->
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                  <i class="fa-solid fa-sitemap text-emerald-400"></i>
+                  叫牌分支獨立顯示 (橫向排列: 共 {{ unfoldedBranches.length }} 個分支)
+                </h3>
+                <span class="text-xs text-slate-500">💡 橫向滑動可比對不同分支結果</span>
+              </div>
+
+              <!-- HORIZONTAL ROW -->
+              <div class="flex items-start gap-6 overflow-x-auto pb-6 pt-1 scrollbar-thin">
+                
+                <div
+                  v-for="branch in unfoldedBranches"
+                  :key="branch.id"
+                  class="w-[330px] sm:w-[360px] shrink-0 bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col space-y-3 hover:border-slate-700 transition"
+                >
+                  <!-- Branch Header -->
+                  <div class="flex items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                    <div class="flex items-center gap-2 truncate">
+                      <span :class="['w-2.5 h-2.5 rounded-full shrink-0', branch.hasError ? 'bg-red-500 animate-pulse' : 'bg-emerald-400']"></span>
+                      <h4 class="text-xs font-bold text-slate-100 truncate">{{ branch.title }}</h4>
+                    </div>
+                    <span :class="[
+                      'text-[10px] px-2 py-0.5 rounded-full font-semibold shrink-0 border',
+                      branch.hasError ? 'bg-red-950 text-red-300 border-red-800/80' : 'bg-emerald-950 text-emerald-300 border-emerald-800/80'
+                    ]">
+                      {{ branch.hasError ? '⚠️ 錯誤叫品' : '✅ 最佳解' }}
+                    </span>
+                  </div>
+
+                  <!-- GREEN FELT MINI BRIDGE TABLE VISUALIZER -->
+                  <div class="bg-felt border border-felt-border rounded-xl p-3 shadow-inner space-y-2 relative">
+                    
+                    <!-- NORTH HAND -->
+                    <div class="flex flex-col items-center">
+                      <div class="text-[10px] font-bold text-emerald-200/90 mb-0.5">北 (N)</div>
+                      <hand-cards-display :hand="activeBoard.hands?.north"></hand-cards-display>
+                    </div>
+
+                    <!-- MIDDLE ROW: WEST | BIDDING GRID | EAST -->
+                    <div class="grid grid-cols-12 gap-1 items-center">
+                      <!-- WEST HAND -->
+                      <div class="col-span-3 flex flex-col items-center">
+                        <div class="text-[10px] font-bold text-emerald-200/90 mb-0.5">西 (W)</div>
+                        <hand-cards-display :hand="activeBoard.hands?.west"></hand-cards-display>
+                      </div>
+
+                      <!-- CENTER 4-COLUMN BIDDING BOX -->
+                      <div class="col-span-6 bg-slate-950/90 rounded-lg p-1.5 border border-slate-800 shadow text-[10px]">
+                        <bidding-grid-box :dealer="activeBoard.metadata?.dealer || '北'" :steps="branch.steps"></bidding-grid-box>
+                      </div>
+
+                      <!-- EAST HAND -->
+                      <div class="col-span-3 flex flex-col items-center">
+                        <div class="text-[10px] font-bold text-emerald-200/90 mb-0.5">東 (E)</div>
+                        <hand-cards-display :hand="activeBoard.hands?.east"></hand-cards-display>
+                      </div>
+                    </div>
+
+                    <!-- SOUTH HAND -->
+                    <div class="flex flex-col items-center pt-0.5">
+                      <div class="text-[10px] font-bold text-emerald-200/90 mb-0.5">南 (S)</div>
+                      <hand-cards-display :hand="activeBoard.hands?.south"></hand-cards-display>
+                    </div>
+                  </div>
+
+                  <!-- BRANCH ERROR ANALYSIS & NOTES -->
+                  <div class="space-y-2 flex-1 pt-1">
+                    
+                    <!-- Error Message Alert Callout -->
+                    <div v-if="branch.hasError && branch.errorMsg" class="bg-red-950/60 border border-red-900/80 rounded-lg p-2.5 text-[11px] text-red-200 space-y-1 shadow">
+                      <div class="font-bold text-red-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-triangle-exclamation shrink-0"></i> 錯誤叫品解析:
+                      </div>
+                      <p class="text-[10.5px] leading-relaxed opacity-95">{{ branch.errorMsg }}</p>
+                    </div>
+
+                    <!-- Linear Step Notes -->
+                    <div class="space-y-1 max-h-40 overflow-y-auto pr-1 text-[11px]">
+                      <template v-for="(step, sIdx) in branch.steps" :key="sIdx">
+                        <div v-if="step.note || step.alert" class="bg-slate-950/60 rounded p-1.5 border border-slate-800/80 text-slate-300">
+                          <span class="font-bold text-emerald-400 mr-1.5">{{ step.pos }}: {{ step.val }}</span>
+                          <span class="text-slate-300 text-[10.5px]">{{ step.note }}</span>
+                        </div>
+                      </template>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+          </template>
+        </main>
+
+      </template>
+
+    </div>
+
+    <!-- ================= EDIT HANDS MODAL ================= -->
+    <div v-if="editHandsModalOpen && handsBuffer" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 space-y-5 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-pen-to-square text-emerald-400"></i> 編輯四家手牌 ({{ activeBoard?.metadata?.title }})
+          </h3>
+          <button @click="editHandsModalOpen = false" class="text-slate-400 hover:text-white">✕</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+          <div v-for="posKey in ['north', 'south', 'east', 'west']" :key="posKey" class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+            <div class="font-bold text-emerald-400 border-b border-slate-800 pb-1">
+              {{ posKey === 'north' ? '北 (N)' : posKey === 'south' ? '南 (S)' : posKey === 'east' ? '東 (E)' : '西 (W)' }}
+            </div>
+            <div v-for="suit in ['S', 'H', 'D', 'C']" :key="suit" class="flex items-center gap-2">
+              <span :class="['w-5 font-bold', suitColorMap[suit]]">{{ suitSymbolMap[suit] }}</span>
+              <input
+                type="text"
+                :value="(handsBuffer[posKey]?.[suit] || []).join(', ')"
+                @input="e => updateSuitCards(posKey, suit, e.target.value)"
+                placeholder="例如: A, K, Q, 10"
+                class="flex-1 bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-200 focus:outline-none focus:border-emerald-500"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button @click="editHandsModalOpen = false" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium">取消</button>
+          <button @click="saveHandsEdits" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold">儲存手牌修改</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= SINGLE BOARD EXPORT MODAL ================= -->
+    <div v-if="singleBoardModalOpen" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 space-y-4 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-file-code text-teal-400"></i> 單獨牌局 JSON 檔 ({{ activeBoard?.metadata?.title }})
+          </h3>
+          <button @click="singleBoardModalOpen = false" class="text-slate-400 hover:text-white">✕</button>
+        </div>
+
+        <p class="text-xs text-slate-400">
+          這是不含 timestamp 的單一牌局 JSON 格式資料：
+        </p>
+
+        <div class="relative">
+          <textarea
+            readonly
+            rows="12"
+            :value="singleBoardCode"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-teal-300 focus:outline-none"
+          ></textarea>
+        </div>
+
+        <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+          <button @click="singleBoardModalOpen = false" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium">
+            關閉
+          </button>
+          <div class="flex items-center gap-2">
+            <button
+              @click="downloadSingleBoardFile"
+              class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-medium flex items-center gap-1.5"
+            >
+              <i class="fa-solid fa-download text-teal-400"></i> 下載 .json 檔
+            </button>
+            <button
+              @click="copySingleBoardCode"
+              class="px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold flex items-center gap-1.5 shadow"
+            >
+              <i :class="singleBoardCopied ? 'fa-solid fa-check' : 'fa-solid fa-copy'"></i>
+              {{ singleBoardCopied ? '已複製！' : '複製單局 JSON' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= IMPORT / MERGE MODAL ================= -->
+    <div v-if="importMergeModalOpen" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-3xl w-full p-6 space-y-4 shadow-2xl max-h-[90vh] flex flex-col">
+        
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-file-import text-emerald-400"></i> 匯入牌局檔案與內容對齊 (Import Cardset)
+          </h3>
+          <button @click="importMergeModalOpen = false" class="text-slate-400 hover:text-white">✕</button>
+        </div>
+
+        <!-- Input Stage: Textarea or File Upload -->
+        <div v-if="!importedCandidates.length" class="space-y-3 flex-1 flex flex-col">
+          <div class="flex items-center justify-between text-xs text-slate-400">
+            <span>請選擇 <code class="text-emerald-400">cardset.js</code> / <code class="text-emerald-400">.json</code> / <code class="text-emerald-400">.test</code> 檔案，或直接貼上內容：</span>
+            <label class="px-3 py-1 rounded bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 cursor-pointer font-medium">
+              <i class="fa-solid fa-upload"></i> 選擇檔案...
+              <input type="file" accept=".js,.test,.json,.txt" class="hidden" @change="handleFileUpload" />
+            </label>
+          </div>
+
+          <textarea
+            rows="10"
+            v-model="importText"
+            placeholder="請貼上 JSON 內容或 const cardset = { ... };"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-500 flex-1"
+          ></textarea>
+
+          <div class="flex justify-end gap-3">
+            <button @click="importMergeModalOpen = false" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium">
+              取消
+            </button>
+            <button @click="parseImportText" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold">
+              解析並匯入
+            </button>
+          </div>
+        </div>
+
+        <!-- Selective Assignment Stage (when merging into existing data) -->
+        <div v-else class="space-y-4 flex-1 flex flex-col overflow-hidden">
+          <div class="flex items-center justify-between text-xs text-slate-300">
+            <span>成功解析出 <strong class="text-emerald-400 font-bold">{{ importedCandidates.length }}</strong> 個牌局，請選擇指派目標資料夾：</span>
+            <div class="flex items-center gap-2">
+              <button @click="selectAllCandidates(true)" class="text-xs text-emerald-400 hover:underline">全選</button>
+              <button @click="selectAllCandidates(false)" class="text-xs text-slate-400 hover:underline">全不選</button>
+            </div>
+          </div>
+
+          <div class="flex-1 overflow-y-auto border border-slate-800 rounded-xl bg-slate-950/60 p-2 space-y-2">
+            <div
+              v-for="(candidate, idx) in importedCandidates"
+              :key="idx"
+              class="bg-slate-900 border border-slate-800 rounded-lg p-3 space-y-2 text-xs"
+            >
+              <div class="flex items-center gap-2">
+                <input type="checkbox" v-model="candidate.selected" class="accent-emerald-500 w-4 h-4 rounded" />
+                <span class="font-bold text-white truncate flex-1">{{ candidate.title }}</span>
+                <span class="text-[10.5px] px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/60">
+                  Tag: {{ candidate.category }}
+                </span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pl-6 pt-1 text-[11px]">
+                <!-- Target Folder Select -->
+                <div>
+                  <label class="block text-slate-400 mb-0.5">目標資料夾 (Folder):</label>
+                  <select v-model="candidate.targetFolder" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200">
+                    <option v-for="fk in folderKeys" :key="fk" :value="fk">{{ fk }}</option>
+                  </select>
+                </div>
+
+                <!-- Destination Mode -->
+                <div>
+                  <label class="block text-slate-400 mb-0.5">指派方式 (Destination):</label>
+                  <select v-model="candidate.targetMode" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200">
+                    <option value="array">加入到『練習集』陣列</option>
+                    <option value="named">建立獨立命名鍵 (Named Key)</option>
+                  </select>
+                </div>
+
+                <!-- Custom Key Name -->
+                <div v-if="candidate.targetMode === 'named'">
+                  <label class="block text-slate-400 mb-0.5">鍵值名稱 (Key Name):</label>
+                  <input
+                    type="text"
+                    v-model="candidate.targetName"
+                    placeholder="如: 練習(一)"
+                    class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-slate-200"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+            <button @click="importedCandidates = []" class="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-xs">
+              ← 上一步
+            </button>
+            <button @click="executeMerge" class="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg">
+              確認併入 Cardset
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================= FULL EXPORT MODAL ================= -->
+    <div v-if="exportModalOpen" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 space-y-4 shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-file-code text-emerald-400"></i> 匯出 Cardset (JS)
+          </h3>
+          <button @click="exportModalOpen = false" class="text-slate-400 hover:text-white">✕</button>
+        </div>
+
+        <p class="text-xs text-slate-400">
+          已自動刪除所有 <code class="text-amber-400 font-mono">timestamp</code>，且未填寫分類者均設為 <code class="text-emerald-400 font-mono">"category": "unsorted"</code>：
+        </p>
+
+        <div class="relative">
+          <textarea
+            readonly
+            rows="12"
+            :value="exportJsCode"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-emerald-300 focus:outline-none"
+          ></textarea>
+          <button
+            @click="copyExportCode"
+            class="absolute top-3 right-3 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs flex items-center gap-1.5 shadow"
+          >
+            <i :class="copiedCode ? 'fa-solid fa-check text-emerald-400' : 'fa-solid fa-copy'"></i>
+            {{ copiedCode ? '已複製！' : '複製全牌組代碼' }}
+          </button>
+        </div>
+
+        <div class="flex justify-end">
+          <button @click="exportModalOpen = false" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-medium">
+            關閉
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= VUE 3 APPLICATION SCRIPT ================= -->
+  <script>
+    const { createApp, ref, computed, watch, reactive, nextTick } = Vue;
+
+    // Helper: Purge timestamps & ensure category exists
+    function purgeTimestampsAndEnsureCategory(obj) {
+      if (!obj || typeof obj !== 'object') return obj;
+      if (Array.isArray(obj)) {
+        return obj.map(item => purgeTimestampsAndEnsureCategory(item));
+      }
+      const result = {};
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          if (key === 'timestamp') continue; // Purge timestamp
+          if (key === 'metadata' && obj.metadata && typeof obj.metadata === 'object') {
+            const meta = { ...obj.metadata };
+            delete meta.timestamp;
+            if (!meta.category || typeof meta.category !== 'string' || !meta.category.trim()) {
+              meta.category = "unsorted";
+            }
+            result.metadata = purgeTimestampsAndEnsureCategory(meta);
+          } else {
+            result[key] = purgeTimestampsAndEnsureCategory(obj[key]);
+          }
+        }
+      }
+      return result;
+    }
+
+    // Helper: Unfold nested bidding tree into linear paths
+    function unfoldBiddingTree(nodes, currentPath = []) {
+      if (!nodes || !Array.isArray(nodes) || nodes.length === 0) {
+        return currentPath.length > 0 ? [currentPath] : [];
+      }
+      let branches = [];
+      for (const node of nodes) {
+        const newPath = [...currentPath, node];
+        if (!node.children || node.children.length === 0) {
+          branches.push(newPath);
+        } else {
+          const childBranches = unfoldBiddingTree(node.children, newPath);
+          branches.push(...childBranches);
+        }
+      }
+      return branches;
+    }
+
+    // Helper: Robust JS/JSON Cardset string parser
+    function parseJsOrJson(text) {
+      let clean = text.trim();
+      clean = clean.replace(/\/\*[\s\S]*?\*\//g, '');
+      clean = clean.replace(/\/\/.*/g, '');
+      clean = clean.replace(/^(const|let|var)\s+\w+\s*=\s*/, '').trim();
+      if (clean.endsWith(';')) clean = clean.slice(0, -1).trim();
+
+      let parsed;
+      try {
+        parsed = new Function(`return (${clean})`)();
+      } catch (e1) {
+        try {
+          parsed = JSON.parse(clean);
+        } catch (e2) {
+          throw new Error("無法解析 JavaScript 物件或 JSON 格式。\n" + e1.message);
+        }
+      }
+      return purgeTimestampsAndEnsureCategory(parsed);
+    }
+
+    const app = createApp({
+      setup() {
+        // Starts with empty cardset by default
+        const cardsetData = reactive({});
+
+        // View Modes: 'folder' or 'categoryTag'
+        const viewMode = ref('folder');
+        const selectedFolderKey = ref('');
+        const selectedCategoryTag = ref('1NT');
+        const selectedBoardId = ref('');
+        const searchQuery = ref('');
+        const collapsedGroups = reactive({});
+
+        // Modals
+        const editHandsModalOpen = ref(false);
+        const handsBuffer = ref(null);
+
+        const singleBoardModalOpen = ref(false);
+        const singleBoardCopied = ref(false);
+
+        const importMergeModalOpen = ref(false);
+        const importText = ref('');
+        const importedCandidates = ref([]);
+
+        const exportModalOpen = ref(false);
+        const copiedCode = ref(false);
+
+        const suitSymbolMap = { S: '♠', H: '♥', D: '♦', C: '♣' };
+        const suitColorMap = { S: 'text-sky-400', H: 'text-red-400', D: 'text-amber-400', C: 'text-emerald-400' };
+
+        const hasData = computed(() => Object.keys(cardsetData).length > 0);
+
+        // All folder keys in active dataset
+        const folderKeys = computed(() => Object.keys(cardsetData));
+
+        watch(folderKeys, (newKeys) => {
+          if (newKeys.length > 0 && (!selectedFolderKey.value || !newKeys.includes(selectedFolderKey.value))) {
+            selectedFolderKey.value = newKeys[0];
+          }
+        }, { immediate: true });
+
+        // Flatten all boards across the dataset into reference objects
+        const allBoardRefs = computed(() => {
+          const list = [];
+          Object.entries(cardsetData).forEach(([folderName, folderContent]) => {
+            if (!folderContent || typeof folderContent !== 'object') return;
+
+            Object.entries(folderContent).forEach(([itemKey, itemVal]) => {
+              if (Array.isArray(itemVal)) {
+                itemVal.forEach((boardObj, idx) => {
+                  if (!boardObj) return;
+                  if (!boardObj.metadata) boardObj.metadata = {};
+                  if (!boardObj.metadata.category) boardObj.metadata.category = "unsorted";
+
+                  list.push({
+                    id: `${folderName}__練習集__${idx}`,
+                    folder: folderName,
+                    parentKey: "練習集",
+                    arrayIndex: idx,
+                    isInPracticeSet: true,
+                    displayLabel: `[練習集] 牌局 ${idx + 1}`,
+                    board: boardObj,
+                    title: boardObj.metadata.title || `牌局 ${idx + 1}`,
+                    category: boardObj.metadata.category || "unsorted"
+                  });
+                });
+              } else if (typeof itemVal === 'object') {
+                if (!itemVal.metadata) itemVal.metadata = {};
+                if (!itemVal.metadata.category) itemVal.metadata.category = "unsorted";
+
+                list.push({
+                  id: `${folderName}__${itemKey}`,
+                  folder: folderName,
+                  parentKey: itemKey,
+                  arrayIndex: null,
+                  isInPracticeSet: false,
+                  displayLabel: itemKey,
+                  board: itemVal,
+                  title: itemVal.metadata.title || itemKey,
+                  category: itemVal.metadata.category || "unsorted"
+                });
+              }
+            });
+          });
+          return list;
+        });
+
+        // Unique Category Tags
+        const allCategoryTags = computed(() => {
+          const set = new Set();
+          allBoardRefs.value.forEach(b => {
+            if (b.category) set.add(b.category);
+          });
+          return Array.from(set).sort();
+        });
+
+        watch(allCategoryTags, (tags) => {
+          if (tags.length > 0 && !tags.includes(selectedCategoryTag.value)) {
+            selectedCategoryTag.value = tags[0];
+          }
+        });
+
+        // Current display list according to view mode & search query
+        const currentDisplayBoards = computed(() => {
+          let filtered = allBoardRefs.value;
+
+          if (searchQuery.value.trim()) {
+            const q = searchQuery.value.toLowerCase();
+            filtered = filtered.filter(item => 
+              item.id === selectedBoardId.value ||
+              item.displayLabel.toLowerCase().includes(q) ||
+              item.title.toLowerCase().includes(q) ||
+              item.category.toLowerCase().includes(q) ||
+              item.folder.toLowerCase().includes(q)
+            );
+          } else {
+            if (viewMode.value === 'folder') {
+              filtered = filtered.filter(item => item.folder === selectedFolderKey.value || item.id === selectedBoardId.value);
+            } else {
+              filtered = filtered.filter(item => item.category === selectedCategoryTag.value || item.id === selectedBoardId.value);
+            }
+          }
+
+          if (viewMode.value === 'folder' && !searchQuery.value.trim()) {
+            const resultList = [];
+            const practiceSetItems = filtered.filter(i => i.isInPracticeSet);
+            const nonPracticeSetItems = filtered.filter(i => !i.isInPracticeSet);
+
+            resultList.push(...nonPracticeSetItems);
+
+            if (practiceSetItems.length > 0) {
+              const groupKey = `${selectedFolderKey.value}__練習集`;
+              resultList.push({
+                isGroupHeader: true,
+                groupKey,
+                childCount: practiceSetItems.length
+              });
+
+              const hasActiveInGroup = practiceSetItems.some(i => i.id === selectedBoardId.value);
+              if (!collapsedGroups[groupKey] || hasActiveInGroup) {
+                resultList.push(...practiceSetItems);
+              }
+            }
+            return resultList;
+          }
+
+          return filtered;
+        });
+
+        watch(currentDisplayBoards, (items) => {
+          const validBoards = items.filter(i => !i.isGroupHeader);
+          if (validBoards.length > 0) {
+            const exists = validBoards.some(b => b.id === selectedBoardId.value);
+            if (!exists) selectedBoardId.value = validBoards[0].id;
+          } else {
+            selectedBoardId.value = '';
+          }
+        }, { immediate: true });
+
+        const activeBoardRefObj = computed(() => {
+          return allBoardRefs.value.find(b => b.id === selectedBoardId.value) || null;
+        });
+
+        const activeBoard = computed(() => {
+          return activeBoardRefObj.value ? activeBoardRefObj.value.board : null;
+        });
+
+        const activeBoardPathLabel = computed(() => {
+          if (!activeBoardRefObj.value) return '';
+          const ref = activeBoardRefObj.value;
+          if (ref.isInPracticeSet) {
+            return `${ref.folder} → 練習集 [${ref.arrayIndex + 1}]`;
+          }
+          return `${ref.folder} → ${ref.parentKey}`;
+        });
+
+        const unfoldedBranches = computed(() => {
+          if (!activeBoard.value || !activeBoard.value.bidding) return [];
+          const paths = unfoldBiddingTree(activeBoard.value.bidding);
+
+          return paths.map((path, idx) => {
+            const terminalNode = path[path.length - 1] || {};
+            const hasError = path.some(step => step.isError) || terminalNode.isError;
+
+            let title = `分支 ${idx + 1}`;
+            const noteWithTitle = path.find(step => step.note && step.note.includes('【分支'));
+            if (noteWithTitle) {
+              const match = noteWithTitle.note.match(/【(分支.*?)】/);
+              if (match) title = match[1];
+            } else if (hasError) {
+              title = `分支 ${idx + 1} (錯誤叫品)`;
+            } else if (idx === 0) {
+              title = `分支 1 (最佳解)`;
+            }
+
+            return {
+              id: `branch-${idx}`,
+              branchIndex: idx + 1,
+              title,
+              hasError,
+              steps: path,
+              errorMsg: path.find(s => s.errorMsg)?.errorMsg || terminalNode.errorMsg
+            };
+          });
+        });
+
+        const getFolderBoardCount = (folderKey) => {
+          return allBoardRefs.value.filter(b => b.folder === folderKey).length;
+        };
+
+        const getCategoryTagBoardCount = (tag) => {
+          return allBoardRefs.value.filter(b => b.category === tag).length;
+        };
+
+        const toggleGroupCollapse = (groupKey) => {
+          collapsedGroups[groupKey] = !collapsedGroups[groupKey];
+        };
+
+        // DUPLICATE BOARD FEATURE
+        const duplicateActiveBoard = () => {
+          if (!activeBoardRefObj.value || !activeBoard.value) return;
+          const refObj = activeBoardRefObj.value;
+          const { folder, isInPracticeSet, parentKey, arrayIndex } = refObj;
+
+          const clonedBoard = JSON.parse(JSON.stringify(activeBoard.value));
+          if (!clonedBoard.metadata) clonedBoard.metadata = {};
+          clonedBoard.metadata.title = (clonedBoard.metadata.title || "牌局") + " (副本)";
+
+          if (isInPracticeSet) {
+            if (!Array.isArray(cardsetData[folder]["練習集"])) {
+              cardsetData[folder]["練習集"] = [];
+            }
+            cardsetData[folder]["練習集"].splice(arrayIndex + 1, 0, clonedBoard);
+            nextTick(() => {
+              selectedBoardId.value = `${folder}__練習集__${arrayIndex + 1}`;
+            });
+          } else {
+            const newKey = `${parentKey}_副本_${Date.now().toString().slice(-4)}`;
+            cardsetData[folder][newKey] = clonedBoard;
+            nextTick(() => {
+              selectedBoardId.value = `${folder}__${newKey}`;
+            });
+          }
+        };
+
+        // SINGLE BOARD JSON EXPORT
+        const singleBoardCode = computed(() => {
+          if (!activeBoard.value) return '';
+          const cleanBoard = purgeTimestampsAndEnsureCategory(activeBoard.value);
+          return JSON.stringify(cleanBoard, null, 2);
+        });
+
+        const openSingleBoardExportModal = () => {
+          singleBoardCopied.value = false;
+          singleBoardModalOpen.value = true;
+        };
+
+        const copySingleBoardCode = () => {
+          navigator.clipboard.writeText(singleBoardCode.value);
+          singleBoardCopied.value = true;
+          setTimeout(() => singleBoardCopied.value = false, 2000);
+        };
+
+        const downloadSingleBoardFile = () => {
+          const blob = new Blob([singleBoardCode.value], { type: 'application/json;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          const fileName = (activeBoard.value?.metadata?.title || 'deal').replace(/[\\/:*?"<>|]/g, '_') + '.json';
+          a.download = fileName;
+          a.click();
+          URL.revokeObjectURL(url);
+        };
+
+        // DELETION LOGIC
+        const deleteBoardByRef = (boardRef, confirmFirst = true) => {
+          if (!boardRef) return;
+          
+          if (confirmFirst) {
+            const titleName = boardRef.title || boardRef.displayLabel;
+            if (!confirm(`確定要刪除牌局「${titleName}」嗎？`)) {
+              return;
+            }
+          }
+
+          const { folder, isInPracticeSet, arrayIndex, parentKey } = boardRef;
+          const folderObj = cardsetData[folder];
+
+          if (!folderObj) return;
+
+          if (isInPracticeSet) {
+            if (Array.isArray(folderObj["練習集"])) {
+              folderObj["練習集"].splice(arrayIndex, 1);
+              if (folderObj["練習集"].length === 0) {
+                delete folderObj["練習集"];
+              }
+            }
+          } else {
+            delete folderObj[parentKey];
+          }
+
+          if (Object.keys(folderObj).length === 0) {
+            delete cardsetData[folder];
+          }
+
+          nextTick(() => {
+            const remaining = currentDisplayBoards.value.filter(b => !b.isGroupHeader);
+            if (remaining.length > 0) {
+              selectedBoardId.value = remaining[0].id;
+            } else {
+              selectedBoardId.value = '';
+            }
+          });
+        };
+
+        const deleteActiveBoard = () => {
+          if (activeBoardRefObj.value) {
+            deleteBoardByRef(activeBoardRefObj.value, true);
+          }
+        };
+
+        const deleteFolder = (folderKey) => {
+          if (!cardsetData[folderKey]) return;
+          const count = getFolderBoardCount(folderKey);
+          if (confirm(`確定要刪除整個資料夾「${folderKey}」及其底下的 ${count} 個牌局嗎？`)) {
+            delete cardsetData[folderKey];
+            nextTick(() => {
+              if (folderKeys.value.length > 0) {
+                selectedFolderKey.value = folderKeys.value[0];
+              } else {
+                selectedFolderKey.value = '';
+                selectedBoardId.value = '';
+              }
+            });
+          }
+        };
+
+        const addNewFolder = () => {
+          const name = prompt("請輸入新資料夾名稱 (如: 1NT, preempt, major, minor):");
+          if (name && name.trim()) {
+            const folderName = name.trim();
+            if (!cardsetData[folderName]) {
+              cardsetData[folderName] = {
+                "練習集": []
+              };
+              selectedFolderKey.value = folderName;
+            } else {
+              alert("該資料夾名稱已存在！");
+            }
+          }
+        };
+
+        // Hands Editing
+        const openEditHandsModal = () => {
+          if (!activeBoard.value) return;
+          handsBuffer.value = JSON.parse(JSON.stringify(activeBoard.value.hands || {}));
+          editHandsModalOpen.value = true;
+        };
+
+        const updateSuitCards = (posKey, suit, rawValue) => {
+          if (!handsBuffer.value[posKey]) handsBuffer.value[posKey] = {};
+          const array = rawValue.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+          handsBuffer.value[posKey][suit] = array;
+        };
+
+        const saveHandsEdits = () => {
+          if (!activeBoard.value) return;
+          activeBoard.value.hands = JSON.parse(JSON.stringify(handsBuffer.value));
+          editHandsModalOpen.value = false;
+        };
+
+        const addWarningNote = () => {
+          if (!activeBoard.value.metadata.warning) activeBoard.value.metadata.warning = [];
+          activeBoard.value.metadata.warning.push("新增觀念與警示提示...");
+        };
+
+        const removeWarningNote = (idx) => {
+          if (activeBoard.value.metadata.warning) {
+            activeBoard.value.metadata.warning.splice(idx, 1);
+          }
+        };
+
+        const addNewBoardToActiveContext = () => {
+          const folder = selectedFolderKey.value || 'natural';
+          const newBoard = {
+            metadata: { title: "新練習牌局", dealer: "北", vulnerability: "None", category: selectedCategoryTag.value || "unsorted" },
+            hands: {
+              north: { S: ["A", "K"], H: ["Q", "J"], D: ["10", "9"], C: ["8", "7"] },
+              south: { S: ["Q", "J"], H: ["10", "9"], D: ["8", "7"], C: ["A", "K"] },
+              east: { S: ["10", "9"], H: ["8", "7"], D: ["A", "K"], C: ["Q", "J"] },
+              west: { S: ["8", "7"], H: ["A", "K"], D: ["Q", "J"], C: ["10", "9"] }
+            },
+            bidding: [{ pos: "北", val: "1NT", note: "開叫 1NT", children: [] }]
+          };
+
+          if (!cardsetData[folder]) cardsetData[folder] = {};
+          if (!cardsetData[folder]["練習集"]) cardsetData[folder]["練習集"] = [];
+          cardsetData[folder]["練習集"].push(newBoard);
+
+          nextTick(() => {
+            const idx = cardsetData[folder]["練習集"].length - 1;
+            selectedBoardId.value = `${folder}__練習集__${idx}`;
+          });
+        };
+
+        // IMPORT / MERGE LOGIC
+        const openImportMergeModal = () => {
+          importText.value = '';
+          importedCandidates.value = [];
+          importMergeModalOpen.value = true;
+        };
+
+        const handleFileUpload = (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            importText.value = evt.target.result;
+          };
+          reader.readAsText(file);
+        };
+
+        const parseImportText = () => {
+          if (!importText.value.trim()) return;
+          try {
+            const parsedData = parseJsOrJson(importText.value);
+
+            if (!hasData.value) {
+              Object.assign(cardsetData, parsedData);
+              importMergeModalOpen.value = false;
+              return;
+            }
+
+            const candidates = [];
+            Object.entries(parsedData).forEach(([fKey, fContent]) => {
+              if (!fContent || typeof fContent !== 'object') return;
+              Object.entries(fContent).forEach(([itemKey, itemVal]) => {
+                if (Array.isArray(itemVal)) {
+                  itemVal.forEach((boardObj, idx) => {
+                    candidates.push({
+                      selected: true,
+                      title: boardObj.metadata?.title || `牌局 ${idx + 1}`,
+                      category: boardObj.metadata?.category || "unsorted",
+                      boardObj,
+                      targetFolder: folderKeys.value.includes(fKey) ? fKey : (folderKeys.value[0] || 'natural'),
+                      targetMode: 'array',
+                      targetName: `練習(${idx + 1})`
+                    });
+                  });
+                } else if (typeof itemVal === 'object') {
+                  candidates.push({
+                    selected: true,
+                    title: itemVal.metadata?.title || itemKey,
+                    category: itemVal.metadata?.category || "unsorted",
+                    boardObj: itemVal,
+                    targetFolder: folderKeys.value.includes(fKey) ? fKey : (folderKeys.value[0] || 'natural'),
+                    targetMode: 'named',
+                    targetName: itemKey
+                  });
+                }
+              });
+            });
+
+            importedCandidates.value = candidates;
+          } catch (err) {
+            alert('解析失敗！請確認匯入的是標準 JS 物件或 JSON 格式。\n錯誤: ' + err.message);
+          }
+        };
+
+        const selectAllCandidates = (val) => {
+          importedCandidates.value.forEach(c => c.selected = val);
+        };
+
+        const executeMerge = () => {
+          const selectedList = importedCandidates.value.filter(c => c.selected);
+          if (selectedList.length === 0) {
+            alert('請至少勾選一個欲併入的牌局！');
+            return;
+          }
+
+          selectedList.forEach(item => {
+            const folder = item.targetFolder;
+            if (!cardsetData[folder]) cardsetData[folder] = {};
+
+            if (item.targetMode === 'array') {
+              if (!Array.isArray(cardsetData[folder]["練習集"])) {
+                cardsetData[folder]["練習集"] = [];
+              }
+              cardsetData[folder]["練習集"].push(item.boardObj);
+            } else {
+              cardsetData[folder][item.targetName || '新練習'] = item.boardObj;
+            }
+          });
+
+          importMergeModalOpen.value = false;
+        };
+
+        // DEMO SAMPLE
+        const loadDemoSample = () => {
+          const sample = {
+            "simpleoneNT": {
+              "練習(一)": {
+                "metadata": { "title": "1NT 練習(一)：Stayman 找到配合後之點力評估", "dealer": "北", "vulnerability": "None", "category": "1NT" },
+                "hands": {
+                  "north": { "S": ["A", "K", "3"], "H": ["Q", "J", "8", "2"], "D": ["K", "7", "5", "2"], "C": ["Q", "4", "2"] },
+                  "south": { "S": ["Q", "9", "5", "4"], "H": ["K", "10", "6", "3"], "D": ["J", "4"], "C": ["K", "7", "5"] },
+                  "east": { "S": ["J", "8", "7"], "H": ["A", "7", "5"], "D": ["A", "9", "3"], "C": ["J", "9", "6"] },
+                  "west": { "S": ["10", "6", "2"], "H": ["9", "4"], "D": ["Q", "10", "8", "6"], "C": ["A", "10", "8", "3"] }
+                },
+                "bidding": [
+                  {
+                    "pos": "北", "val": "1NT", "note": "15-17 HCP 平衡型",
+                    "children": [
+                      {
+                        "pos": "東", "val": "Pass", "note": "",
+                        "children": [
+                          {
+                            "pos": "南", "val": "2♣", "note": "Stayman 詢問 4 張高花",
+                            "children": [
+                              {
+                                "pos": "西", "val": "Pass", "note": "",
+                                "children": [
+                                  {
+                                    "pos": "北", "val": "2♥", "note": "答 4 張 ♥",
+                                    "children": [
+                                      {
+                                        "pos": "東", "val": "Pass", "note": "",
+                                        "children": [
+                                          {
+                                            "pos": "南", "val": "4♥", "note": "【分支 1A：最佳解】找到 8 張 ♥ 配合！9 HCP + 同伴 15-17 HCP 達 24+ 成局線，直進 4♥",
+                                            "children": [
+                                              { "pos": "西", "val": "Pass", "note": "", "children": [{ "pos": "北", "val": "Pass", "note": "", "children": [{ "pos": "東", "val": "Pass", "note": "", "children": [] }] }] }
+                                            ]
+                                          },
+                                          { "pos": "南", "val": "3♥", "note": "", "children": [], "isError": true, "errorMsg": "找到高花配合且已達 24+ 成局點力，應直接叫 4♥，勿叫 3♥ 邀請！" }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          };
+          Object.assign(cardsetData, purgeTimestampsAndEnsureCategory(sample));
+        };
+
+        // EXPORT LOGIC
+        const openExportModal = () => {
+          exportModalOpen.value = true;
+          copiedCode.value = false;
+        };
+
+        const exportJsCode = computed(() => {
+          const cleanObj = purgeTimestampsAndEnsureCategory(cardsetData);
+          return `const cardset = ${JSON.stringify(cleanObj, null, 4)};`;
+        });
+
+        const copyExportCode = () => {
+          navigator.clipboard.writeText(exportJsCode.value);
+          copiedCode.value = true;
+          setTimeout(() => copiedCode.value = false, 2000);
+        };
+
+        return {
+          cardsetData,
+          hasData,
+          viewMode,
+          selectedFolderKey,
+          selectedCategoryTag,
+          selectedBoardId,
+          searchQuery,
+          collapsedGroups,
+          folderKeys,
+          allCategoryTags,
+          currentDisplayBoards,
+          activeBoard,
+          activeBoardPathLabel,
+          unfoldedBranches,
+          getFolderBoardCount,
+          getCategoryTagBoardCount,
+          toggleGroupCollapse,
+          duplicateActiveBoard,
+          singleBoardModalOpen,
+          singleBoardCode,
+          singleBoardCopied,
+          openSingleBoardExportModal,
+          copySingleBoardCode,
+          downloadSingleBoardFile,
+          deleteBoardByRef,
+          deleteActiveBoard,
+          deleteFolder,
+          addNewFolder,
+          editHandsModalOpen,
+          handsBuffer,
+          openEditHandsModal,
+          updateSuitCards,
+          saveHandsEdits,
+          addWarningNote,
+          removeWarningNote,
+          addNewBoardToActiveContext,
+          importMergeModalOpen,
+          importText,
+          importedCandidates,
+          openImportMergeModal,
+          handleFileUpload,
+          parseImportText,
+          selectAllCandidates,
+          executeMerge,
+          loadDemoSample,
+          exportModalOpen,
+          copiedCode,
+          openExportModal,
+          exportJsCode,
+          copyExportCode,
+          suitSymbolMap,
+          suitColorMap
+        };
+      }
+    });
+
+    // COMPONENT: HAND CARDS DISPLAY (CHIPS)
+    app.component('hand-cards-display', {
+      props: ['hand'],
+      template: `
+        <div class="space-y-0.5 w-full">
+          <div v-for="suit in ['S', 'H', 'D', 'C']" :key="suit" class="flex items-center gap-1 text-[9.5px] leading-none">
+            <span :class="['w-3.5 h-3.5 rounded flex items-center justify-center font-bold shrink-0 border', suitBadgeStyle[suit]]">
+              {{ suitSymbol[suit] }}
+            </span>
+            <div class="flex flex-wrap gap-0.5 truncate">
+              <template v-if="getCards(suit).length > 0">
+                <span v-for="(card, cIdx) in getCards(suit)" :key="cIdx" class="card-chip bg-slate-100 text-slate-900 font-bold px-1 py-0.2 rounded text-[9px]">
+                  {{ card }}
+                </span>
+              </template>
+              <span v-else class="text-emerald-300/40">—</span>
+            </div>
+          </div>
+        </div>
+      `,
+      setup(props) {
+        const suitSymbol = { S: '♠', H: '♥', D: '♦', C: '♣' };
+        const suitBadgeStyle = {
+          S: 'text-sky-300 bg-sky-950/90 border-sky-600/70',
+          H: 'text-red-300 bg-red-950/90 border-red-600/70',
+          D: 'text-amber-300 bg-amber-950/90 border-amber-600/70',
+          C: 'text-emerald-300 bg-emerald-950/90 border-emerald-600/70'
+        };
+        const getCards = (suit) => (props.hand && props.hand[suit]) ? props.hand[suit] : [];
+        return { suitSymbol, suitBadgeStyle, getCards };
+      }
+    });
+
+    // COMPONENT: 4-COLUMN BIDDING GRID BOX
+    app.component('bidding-grid-box', {
+      props: ['dealer', 'steps'],
+      template: `
+        <div class="space-y-1">
+          <div class="grid grid-cols-4 text-center font-bold text-slate-400 border-b border-slate-800 pb-0.5 text-[9px]">
+            <div>西</div><div>北</div><div>東</div><div>南</div>
+          </div>
+          <div class="space-y-0.5">
+            <div v-for="(row, rIdx) in rows" :key="rIdx" class="grid grid-cols-4 gap-0.5 text-center items-center">
+              <div v-for="(cell, cIdx) in row" :key="cIdx">
+                <div v-if="cell.isPlaceholder" class="text-slate-600 text-[9px]">-</div>
+                <div
+                  v-else
+                  :class="[
+                    'py-0.5 px-0.5 rounded font-bold text-[9.5px] truncate border',
+                    cell.isError ? 'bg-red-950/90 text-red-300 border-red-700 animate-pulse' :
+                    cell.alert ? 'bg-amber-950/90 text-amber-300 border-amber-700' :
+                    cell.val === 'Pass' ? 'bg-slate-900 text-slate-400 border-slate-800' :
+                    (cell.val === 'X' || cell.val === 'XX') ? 'bg-red-900/60 text-red-200 border-red-800' :
+                    'bg-emerald-950/90 text-emerald-200 border-emerald-800'
+                  ]"
+                  :title="cell.note || ''"
+                >
+                  {{ cell.val }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+      setup(props) {
+        const posMap = { "西": 0, "北": 1, "東": 2, "南": 3, "W": 0, "N": 1, "E": 2, "S": 3 };
+
+        const rows = computed(() => {
+          const dealerIdx = posMap[props.dealer] ?? 1;
+          const fullCells = [];
+
+          for (let i = 0; i < dealerIdx; i++) {
+            fullCells.push({ isPlaceholder: true });
+          }
+
+          if (props.steps) {
+            props.steps.forEach(s => {
+              fullCells.push({
+                isPlaceholder: false,
+                pos: s.pos,
+                val: s.val,
+                alert: s.alert,
+                isError: s.isError,
+                note: s.note
+              });
+            });
+          }
+
+          const grouped = [];
+          for (let i = 0; i < fullCells.length; i += 4) {
+            grouped.push(fullCells.slice(i, i + 4));
+          }
+          return grouped;
+        });
+
+        return { rows };
+      }
+    });
+
+    app.mount('#app');
+  </script>
+</body>
+</html>

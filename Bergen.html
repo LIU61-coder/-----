@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. Bergen 基本概念</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 加奇數：問短後續</button>
+    <button class="tab-btn" onclick="showTab(2)">3. 1H - 2N! 後續</button>
+    <button class="tab-btn" onclick="showTab(3)">4. 1S - 3♣! 後續</button>
+</nav>
+
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>Bergen 制度：四張高花配合架構</h2>
+        <p>基本概念：當開叫 1M 時，從 <span class="highlight">2M 開始 +1 到 +5</span> 的叫品，皆代表持有 <span class="highlight">4+ 張高花配合 (4+M fit)</span>：</p>
+        
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>開叫 1H 後的 Bergen 答叫</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">1H - 2♠!</span> = 4+張H, 7~9點 <span class="highlight">有短</span></li>
+                    <li><span class="badge">1H - 2N!</span> = 4+張H, <span class="highlight">FG</span> (迫叫成局，三短四長)</li>
+                    <li><span class="badge">1H - 3♣!</span> = 4+張H, 10~12點 <span class="highlight">有短</span></li>
+                    <li><span class="badge">1H - 3♦!</span> = 4+張H, <span class="highlight">INV, BAL</span> (均型邀請)</li>
+                    <li><span class="badge">1H - 3H</span> = 4+張H, 阻擊或弱加叫 (NV: 0~6; V: 4~6)</li>
+                    <li><span class="badge">1H - 3♠ / 4X</span> = 4+張H, 13~15點 <span class="highlight">有 S / X 短</span></li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>開叫 1S 後的 Bergen 答叫</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">1S - 2N!</span> = 4+張S, 7~9點 <span class="highlight">有短</span></li>
+                    <li><span class="badge">1S - 3♣!</span> = 4+張S, <span class="highlight">FG</span> (迫叫成局，三短四長)</li>
+                    <li><span class="badge">1S - 3♦!</span> = 4+張S, 10~12點 <span class="highlight">有短</span></li>
+                    <li><span class="badge">1S - 3♥!</span> = 4+張S, <span class="highlight">INV, BAL</span> (均型邀請)</li>
+                    <li><span class="badge">1S - 3S</span> = 4+張S, 阻擊或弱加叫 (NV: 0~6; V: 4~6)</li>
+                    <li><span class="badge">1S - 4X</span> = 4+張S, 13~15點 <span class="highlight">有 X 短</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>加奇數表示有短：開叫者「加一問短」後續</h2>
+        <p>當答叫者做出代表有短的加叫時，開叫者可以使用「加一」的叫品來精確詢問答叫者的短門位置：</p>
+
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>1H 開叫後續 (7~9點 / 10~12點有短)</h3>
+                <div class="rule-card" style="border-left-color: var(--accent); background: rgba(250, 196, 0, 0.05); padding: 12px; margin-bottom: 15px;">
+                    <p><strong>1H - 2♠! (7~9有短) ➔ 2N! (加一問短)</strong></p>
+                    <p>↳ <span class="highlight">3♣!</span> = 梅花短 (short in C)</p>
+                    <p>↳ <span class="highlight">3♦!</span> = 方塊短 (short in D)</p>
+                    <p>↳ <span class="highlight">3♥!</span> = 黑桃短 (short in S)</p>
+                </div>
+                <div class="rule-card" style="border-left-color: var(--accent); background: rgba(250, 196, 0, 0.05); padding: 12px;">
+                    <p><strong>1H - 3♣! (10~12有短) ➔ 3♦! (加一問短)</strong></p>
+                    <p>↳ <span class="highlight">3♥!</span> = 梅花短 (short in C)</p>
+                    <p>↳ <span class="highlight">3♠!</span> = 方塊短 (short in D)</p>
+                    <p>↳ <span class="highlight">3N!</span> = 黑桃短 (short in S)</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <h3>1S 開叫後續 (7~9點 / 10~12點有短)</h3>
+                <div class="rule-card" style="border-left-color: var(--accent); background: rgba(250, 196, 0, 0.05); padding: 12px; margin-bottom: 15px;">
+                    <p><strong>1S - 2N! (7~9有短) ➔ 3♣! (加一問短)</strong></p>
+                    <p>↳ <span class="highlight">3♦!</span> = 方塊短 (short in D)</p>
+                    <p>↳ <span class="highlight">3♥!</span> = 紅心短 (short in H)</p>
+                    <p>↳ <span class="highlight">3♠!</span> = 梅花短 (short in C)</p>
+                </div>
+                <div class="rule-card" style="border-left-color: var(--accent); background: rgba(250, 196, 0, 0.05); padding: 12px;">
+                    <p><strong>1S - 3♦! (10~12有短) ➔ 3♥! (加一問短)</strong></p>
+                    <p>↳ <span class="highlight">3♠!</span> = 梅花短 (short in C)</p>
+                    <p>↳ <span class="highlight">3N!</span> = 方塊短 (short in D)</p>
+                    <p>↳ <span class="highlight">4♣!</span> = 紅心短 (short in H)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>1H - 2N! 迫叫成局 (FG) 後續：開叫者描述</h2>
+        <p>當進程為 <strong>1H - 2N! (三短四長強配合)</strong> 時，開叫者依手牌結構做出精準的回應與點力範圍描述：</p>
+
+        <div class="rule-card" style="border-left-color: var(--accent); background: rgba(239, 68, 68, 0.05); padding: 20px; border-radius: 12px;">
+            <h3>開叫者 (Opener) 的再叫結構：</h3>
+            <div class="info-grid">
+                <div class="info-box">
+                    <p><span class="badge">3♣</span> = 梅花短張 (short in C)</p>
+                    <p><span class="badge">3♦</span> = 方塊短張 (short in D)</p>
+                    <p><span class="badge">3♠</span> = 黑桃短張 (short in S)</p>
+                    <p><span class="badge">4♣/♦/♠</span> = 5+張低花 / 6-5高花分配</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="badge">3♥</span> = <strong>平均牌型，12 - 15 點</strong></p>
+                    <p><span class="badge">3N</span> = <strong>平均牌型，16 - 18 點</strong></p>
+                    <p><span class="badge">4♥</span> = <strong>平均牌型，19 - 21 點</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-3" class="tab-content">
+    <div class="theory-layout">
+        <h2>1S - 3♣! 迫叫成局 (FG) 後續：開叫者描述</h2>
+        <p>當進程為 <strong>1S - 3♣! (三短四長強配合)</strong> 時，開叫者依手牌結構做出精準的回應與點力範圍描述：</p>
+
+        <div class="rule-card" style="border-left-color: var(--accent); background: rgba(59, 130, 246, 0.05); padding: 20px; border-radius: 12px;">
+            <h3>開叫者 (Opener) 的再叫結構：</h3>
+            <div class="info-grid">
+                <div class="info-box">
+                    <p><span class="badge">3♦</span> = 方塊短張 (short in D)</p>
+                    <p><span class="badge">3♥</span> = 紅心短張 (short in H)</p>
+                    <p><span class="badge">3♠!</span> = <strong>梅花短張 (short in C)</strong> <span class="highlight">※注意非自然</span></p>
+                    <p><span class="badge">4♣/♦/♥</span> = 5+張低花或高花</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="badge">3N</span> = <strong>平均牌型，12 - 15 點</strong></p>
+                    <p><span class="badge">4♠</span> = <strong>平均牌型，16 - 18 點</strong></p>
+                    <p><span class="badge">4N</span> = <strong>平均牌型，19 - 21 點</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

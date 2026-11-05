@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/lobby.css">
+    <style>
+        :root {
+            --green-bg: linear-gradient(180deg, #028345 0%, #68b04d 100%);
+            --blue-bg: linear-gradient(180deg, #0c2b8a 0%, #3e52b8 100%);
+            --red-bg: linear-gradient(180deg, #b01a1a 0%, #e84c3d 100%);
+            
+            /* 預設尺寸 */
+            --btn-w: 200px;
+            --btn-h: 160px;
+            --font-main: 36px;
+            --font-tab: 16px;
+            --tab-top: -35px;
+        }
+
+        @media (max-width: 600px) {
+            :root {
+                --btn-w: 150px;    
+                --btn-h: 120px;    
+                --font-main: 24px; 
+                --font-tab: 12px;  
+                --tab-top: -25px;  
+            }
+            body {
+                flex-direction: column;
+                gap: 60px !important;
+                padding-top: 50px !important;
+            }
+        }
+
+        body {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            padding: 100px 20px;
+            margin: 0;
+            background-color: #e5e5e5;
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="status-btn btn-pass" data-tab="Pass" onclick="window.location.href='teach.html'">
+        <div class="label-box">
+            <span class="text">教學</span>
+        </div>
+    </button>
+
+    <button class="status-btn btn-xx" data-tab="XX" onclick="window.location.href='info.html'">
+        <div class="label-box">
+            <span class="text">關於社團</span>
+        </div>
+    </button>
+
+    <button class="status-btn btn-x" data-tab="X" onclick="window.location.href='setting.html'">
+        <div class="label-box">
+            <span class="text">設定</span>
+        </div>
+    </button>
+
+</body>
+</html>

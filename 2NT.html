@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 直接答叫</button>
+    <button class="tab-btn" onclick="showTab(1)">2. Stayman 後續</button>
+    <button class="tab-btn" onclick="showTab(2)">3. Transfer 後續</button>
+    <button class="tab-btn" onclick="showTab(3)">4. 3♠ / 4m 低花後續</button>
+</nav>
+
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>2NT 開叫後的直接答叫架構</h2>
+        <p>當同伴開叫強 <strong>2NT (20-21 HCP, 平均牌型)</strong> 時，答叫者的第一步決策與叫牌意義：</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #fac400;">
+                <h3>高花與結構性問叫</h3>
+                <ul style="list-style: none; padding-left: 0; line-height: 1.8;">
+                    <li><span class="badge">3♣</span> = <strong>Stayman</strong> (保證至少一門 4 張高花)</li>
+                    <li><span class="badge">3♦</span> = <strong>Transfer to ♥</strong> (5張以上紅心)</li>
+                    <li><span class="badge">3♥</span> = <strong>Transfer to ♠</strong> (5張以上黑桃)</li>
+                    <li><span class="badge">3♠</span> = <strong>5-4m 或 5+♣</strong>，問梅花配合度</li>
+                </ul>
+            </div>
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>成局與低花滿貫試探</h3>
+                <ul style="list-style: none; padding-left: 0; line-height: 1.8;">
+                    <li><span class="badge">3NT</span> = <strong>To play</strong> (止叫於 3NT)</li>
+                    <li><span class="badge">4♣</span> = <strong>5+張 ♦ 滿貫試探 (Slam Try)</strong></li>
+                    <li><span class="badge">4♦ / 4♥</span> = <strong>Texas Transfer</strong> (轉至 4♥ / 4♠)</li>
+                    <li><span class="badge">4♠ / 4NT</span> = <strong>量化問叫 (Quantitative)</strong> (佳/普通)</li>
+                    <li><span class="badge">5NT</span> = <strong>量化邀請滿貫 (Quant)</strong></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>2NT - 3♣ (Stayman) 答叫與二階發展</h2>
+        <p>開叫者根據有無 4 張高花做出回應，答叫者隨後可以進行滿貫試探或牌型再描述：</p>
+
+        <div class="rule-card" style="border-left-color: #fac400; background: rgba(250, 196, 0, 0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+            <h3>開叫者的第一步回應：</h3>
+            <ul style="list-style: none; padding-left: 0;">
+                <li><span class="badge">3♦</span> = 無 4 張高花</li>
+                <li><span class="badge">3♥</span> = 有 4 張紅心</li>
+                <li><span class="badge">3♠</span> = 有 4 張黑桃</li>
+            </ul>
+        </div>
+
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #94a3b8;">
+                <h3>若開叫者答 3♦ (無高花)：</h3>
+                <ul style="list-style: none; padding-left: 0; line-height: 1.8;">
+                    <li><span class="badge">3M</span> = <strong>4張M + 5張oM</strong> (高花 4-5 或 5-4 分配)</li>
+                    <li><span class="badge">4m</span> = <strong>5+張低花，滿貫試探 (ST)</strong><br><small>※ 開叫人若無配合叫 4NT，有配合則報控</small></li>
+                    <li><span class="badge">4NT</span> = <strong>量化問叫 (Quant)</strong></li>
+                </ul>
+            </div>
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>若開叫者答 3♥ / 3♠ (有高花)：</h3>
+                <ul style="list-style: none; padding-left: 0; line-height: 1.8;">
+                    <li><strong>面臨 3♥ 回應時：</strong></li>
+                    <li><span class="badge">3♠</span> = <strong>Fit ♥，滿貫試探 (ST)</strong></li>
+                    <li><strong>面臨 3♠ 回應時：</strong></li>
+                    <li><span class="badge">4♥</span> = <strong>Fit ♠，滿貫試探 (ST)</strong></li>
+                    <li><strong>共同後續：</strong></li>
+                    <li><span class="badge">4m</span> = <strong>5+張低花，滿貫試探 (ST)</strong></li>
+                    <li><span class="badge">4NT</span> = <strong>量化問叫 (Quant)</strong></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>2NT - 3♦ / 3♥ (高花轉換) 與後續發展</h2>
+        <p>轉換叫之後，答叫者可以選擇邀請滿貫（RKC）或帶出低花長門進行試探：</p>
+
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>紅心轉換：2NT - 3♦ ; 3♥ - ?</h3>
+                <ul style="list-style: none; padding-left: 0; line-height: 1.8;">
+                    <li><span class="badge">3♠ / 4m</span> = <strong>報控 (Cuebid)</strong>，確立 ♥ 為王牌</li>
+                    <li><span class="badge" style="background: #ef4444;">4NT</span> = <strong>♥ RKC</strong> (羅馬關鍵牌問叫)</li>
+                    <li><span class="badge">3NT</span> = <strong>5張♥ 滿貫邀請</strong>，交由開叫者二選一：</li>
+                    <li style="padding-left: 15px;"><span class="badge">4m</span> = 5張♥ + 4+張低花 (開叫者無配合回 4NT)</li>
+                    <li style="padding-left: 15px;"><span class="badge">4NT</span> = 量化問叫</li>
+                </ul>
+            </div>
+            <div class="info-box" style="border-top-color: #3b82f6;">
+                <h3>黑桃轉換：2NT - 3♥ ; 3♠ - ?</h3>
+                <ul style="list-style: none; padding-left: 0; line-height: 1.8;">
+                    <li><span class="badge">4m / 4♥</span> = <strong>報控 (Cuebid)</strong>，確立 ♠ 為王牌</li>
+                    <li><span class="badge" style="background: #3b82f6;">4NT</span> = <strong>♠ RKC</strong> (羅馬關鍵牌問叫)</li>
+                    <li><span class="badge">3NT</span> = <strong>5張♠ 滿貫邀請</strong>，交由開叫者二選一：</li>
+                    <li style="padding-left: 15px;"><span class="badge">4m</span> = 5張♠ + 4+張低花 (開叫者無配合回 4NT)</li>
+                    <li style="padding-left: 15px;"><span class="badge">4♥</span> = <strong>5-5 高花，非迫叫 (NF)</strong><br><small>(註：5-4M 會先經由 3♣ Stayman 詢問)</small></li>
+                    <li style="padding-left: 15px;"><span class="badge">4NT</span> = 量化問叫</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-3" class="tab-content">
+    <div class="theory-layout">
+        <h2>2NT - 3♠ (問梅花) 與 4♣ (方塊試探)</h2>
+        <p>專門處理答叫者持有「低花長門」時的滿貫試探發展：</p>
+
+        <div class="rule-card" style="border-left-color: #4ade80; background: rgba(74, 222, 128, 0.05); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+            <h3>梅花尋覓：2NT - 3♠ ; ?</h3>
+            <ul style="list-style: none; padding-left: 0; line-height: 1.8;">
+                <li><span class="badge">3NT</span> = <strong>無 4 張梅花</strong></li>
+                <li style="padding-left: 20px;">→ 續叫 <span class="badge">4♣</span> = 5+張♣，滿貫試探</li>
+                <li style="padding-left: 20px;">→ 續叫 <span class="badge">4♦</span> = 4+張♣ + 5+張♦，雙低花滿貫試探</li>
+                <li style="padding-left: 20px;">→ 續叫 <span class="badge" style="background: #ef4444;">4♥!</span> = 6+張♣，強烈滿貫試探</li>
+                <li><span class="badge">4♣</span> = <strong>有 4+ 張梅花</strong></li>
+                <li style="padding-left: 20px;">→ 續叫 <span class="badge">4X</span> = 報控 (Cue bid)，梅花滿貫確立</li>
+            </ul>
+        </div>
+
+        <div class="rule-card" style="border-left-color: #3b82f6; background: rgba(59, 130, 246, 0.05); padding: 20px; border-radius: 12px;">
+            <h3>方塊滿貫試探與 4NT 後續</h3>
+            <ul style="list-style: none; padding-left: 0; line-height: 1.8;">
+                <li><span class="badge">2NT - 4♣</span> = <strong>5+張 ♦ 滿貫試探 (Slam Try)</strong></li>
+                <li style="padding-left: 20px;">→ 開叫人答 <span class="badge">4NT</span> = 無配合 (No fit)；其餘叫品 = 報控 (Cue-bid)</li>
+                <li><span class="badge">2NT - 4NT</span> = <strong>量化問叫 (Quantitative)</strong></li>
+                <li style="padding-left: 20px;">→ 後續發展與 <span class="highlight">1NT - 4NT</span> 的配合原則完全相同。</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

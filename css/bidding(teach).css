@@ -1,0 +1,40 @@
+body {
+    background-color: var(--dark-bg);
+    color: white;
+    font-family: "Microsoft JhengHei", sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 上半部：叫牌區 */
+.top-section { display: flex; height: 70%; border-bottom: 2px solid #444; }
+.bidding-history { width: 300px; padding: 15px; border-right: 1px solid #444; display: flex; flex-direction: column; }
+.history-table { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; font-weight: bold; color: var(--accent); margin-bottom: 10px; }
+#bid-log { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; overflow-y: auto; flex-grow: 1; align-content: start; }
+.bid-cell { padding: 8px 2px; text-align: center; background: rgba(255,255,255,0.05); border-radius: 4px; position: relative; }
+.bid-note-icon { position: absolute; top: -2px; right: 2px; background: var(--accent); color: black; width: 14px; height: 14px; border-radius: 50%; font-size: 10px; cursor: help; display: flex; align-items: center; justify-content: center; }
+
+/* 叫牌按鈕區 */
+.input-area { padding: 20px; flex-grow: 1; overflow-y: auto; }
+.bid-matrix { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-width: 600px; margin-top: 10px; }
+.bid-btn { padding: 12px 5px; border: 1px solid #555; border-radius: 6px; background: #333; color: white; cursor: pointer; font-weight: bold; }
+.bid-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.bid-btn.pass { background: #2d8a3c; }
+.bid-btn.suit-NT { background: #444; }
+
+/* 下半部：手牌區 */
+.bottom-section { flex-grow: 1; background-color: #1a472a; position: relative; display: flex; justify-content: center; align-items: flex-end; padding-bottom: 20px; perspective: 1000px; }
+.card { position: absolute; width: 80px; height: 120px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.5); transition: 0.3s; left: calc(50% + var(--offset)); transform: translateX(-50%); }
+.card::after { content: attr(data-suit); position: absolute; top: -15px; width: 40%; height: 20px; border-radius: 5px 5px 0 0; display: flex; align-items: center; justify-content: center; font-size: 14px; left: 50%; transform: translateX(-50%); }
+.label-box { background: white; width: 80%; height: 70%; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin: 15% auto; }
+.rank-text { font-size: 22px; font-weight: 900; }
+
+/* 花色卡片顏色 */
+.card.club-suit { background: var(--green-bg); color: #028345; } .card.club-suit::after { background: #a5d6a7; color: #028345; }
+.card.diamond-suit { background: var(--yellow-bg); color: #8a6d00; } .card.diamond-suit::after { background: #ffe897; color: #8a6d00; }
+.card.heart-suit { background: var(--red-bg); color: #b01a1a; } .card.heart-suit::after { background: #ffcdd2; color: #b01a1a; }
+.card.spade-suit { background: var(--blue-bg); color: #0c2b8a; } .card.spade-suit::after { background: #c5cae9; color: #0c2b8a; }
+.card:hover { transform: translateX(-50%) translateY(-30px); z-index: 100 !important; }

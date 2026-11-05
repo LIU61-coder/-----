@@ -1,0 +1,248 @@
+/* 手牌預覽彈窗浮動層 */
+.hand-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.hand-modal-content {
+    background: var(--panel-bg);
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    padding: 15px 20px;
+    width: 380px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.6);
+    position: relative;
+}
+
+.hand-modal-close {
+    position: absolute;
+    top: 8px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+.hand-modal-close:hover {
+    color: #fff;
+}
+
+/* 十字羅盤版面配置 */
+.compass-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.hand-box {
+    background: #1e1e1e;
+    border: 1px solid #444;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.hand-title {
+    font-weight: bold;
+    color: var(--accent);
+    border-bottom: 1px solid #444;
+    margin-bottom: 4px;
+    text-align: center;
+    padding-bottom: 2px;
+}
+
+.pos-north { grid-column: 2; grid-row: 1; }
+.pos-west  { grid-column: 1; grid-row: 2; }
+.pos-east  { grid-column: 3; grid-row: 2; }
+.pos-south { grid-column: 2; grid-row: 3; }
+
+.suit-line {
+    display: flex;
+    gap: 6px;
+    font-family: monospace;
+    font-size: 14px;
+}
+/* 錯誤叫品樹狀圖節點樣式 */
+.tree-content.error {
+    background: #4a151b !important;
+    border: 1px solid #ff4757 !important;
+    color: #ff8e8e !important;
+}
+
+/* 直線叫牌記錄的錯誤叫品樣式 */
+.bid-cell.error {
+    background: #5c1d24 !important;
+    border: 1px solid #ff4757 !important;
+    color: #ff6b6b !important;
+}
+
+/* 警示按鈕懸停 */
+.tree-btn.warn:hover {
+    color: #ffa502;
+}
+
+/* 頂部錯誤提示條 */
+.error-alert-bar {
+    background: #b21f2d;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #ff4757;
+}
+/* 樹狀圖節點樣式 */
+.tree-node {
+    margin-left: 15px;
+    border-left: 2px dashed #555;
+    padding-left: 10px;
+    margin-top: 4px;
+}
+
+.tree-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #3a3a3a;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.tree-content:hover {
+    background: #4a4a4a;
+}
+
+/* 目前選中的路徑節點高亮 */
+.tree-content.active {
+    background: #524300;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-weight: bold;
+}
+
+.tree-btn {
+    background: transparent;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 11px;
+    padding: 1px 4px;
+}
+.tree-btn:hover {
+    color: #fff;
+}
+.tree-btn.del:hover {
+    color: #ff4757;
+}
+/*新增_____________________________*/
+
+.bidding-history {
+    width: 400px;
+    flex-shrink: 0;
+    background: var(--panel-bg);
+    border-right: 2px solid #444;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.history-table {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid #555;
+    padding-bottom: 10px;
+}
+
+.bid-cell {
+    padding: 8px 2px;
+    background: #3d3d3d;
+    border-radius: 4px;
+    margin-top: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    position: relative;
+}
+
+.bid-note {
+    display: block;
+    font-size: 10px;
+    color: #aaa;
+    font-weight: normal;
+}
+
+.input-area {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dealer-setup {
+    background: #333;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.bid-matrix {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    max-width: 600px;
+}
+
+.bid-btn {
+    padding: 15px 5px;
+    background: #444;
+    border: 1px solid #555;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.bid-btn:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+}
+
+.bid-btn.special { background: #555; }
+.bid-btn.pass { background: #028345; }
+.bid-btn.double { background: #b01a1a; }
+.bid-btn.redouble { background: #0c2b8a; }
+
+.suit-C { color: var(--suit-club); }
+.suit-D { color: var(--suit-diamond); }
+.suit-H { color: var(--suit-heart); }
+.suit-S { color: var(--suit-spade); }
+.suit-NT { color: white; }
+
+.status-bar {
+    font-size: 18px;
+    color: var(--accent);
+    font-weight: bold;
+}

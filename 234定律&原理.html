@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 二三四定律</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 弱二開叫後續</button>
+    <button class="tab-btn" onclick="showTab(2)">3. 贏墩估算</button>
+    <button class="tab-btn" onclick="showTab(3)">4. 竄叫禁止事項</button>
+</nav>
+
+<div id="tab-0" class="tab-content">
+    <div class="theory-layout">
+        <h2>二三四定律</h2>
+        <p>當你預期對手會成局時，透過「犧牲叫」來減少失分。核心在於：<span class="highlight">失分低於對手成局分數</span>。</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>如何計算容許倒墩？</h3>
+                <p>根據身價決定你可以「倒幾墩」：</p>
+                <ul>
+                    <li><span class="highlight">有身價 (Vul)：</span> 只能倒 <span class="badge">2</span> 墩</li>
+                    <li><span class="highlight">平身價 (Equal)：</span> 可以倒 <span class="badge">3</span> 墩</li>
+                    <li><span class="highlight">無身價 (Non-Vul)：</span> 對手有身價時，可倒 <span class="badge">4</span> 墩</li>
+                </ul>
+            </div>
+
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>如何數「莊家贏墩」？</h3>
+                <p>在決定犧牲前，你必須誠實評估自己的贏墩：</p>
+                <ul>
+                    <li><span class="highlight">長門大牌：</span> A=1, K=1 (若有A), Q=0.5</li>
+                    <li><span class="highlight">王牌張數：</span> 每一張超過第5張的王牌通常算1墩。</li>
+                    <li><span class="highlight">短門價值：</span> 若有王牌配合，單張或缺門可透過王牌王吃增加贏墩。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="rule-card" style="background: rgba(15, 23, 42, 0.6); margin-top: 30px;">
+            <h3>為什麼要這樣做？(被X後的損益表)</h3>
+            <table style="width: 100%; border-collapse: collapse; color: var(--text-dim); text-align: center;">
+                <thead style="color: var(--accent);">
+                    <tr>
+                        <th style="padding: 10px; border-bottom: 1px solid #334155;">身價狀態</th>
+                        <th style="padding: 10px; border-bottom: 1px solid #334155;">倒墩數</th>
+                        <th style="padding: 10px; border-bottom: 1px solid #334155;">處罰分數(X)</th>
+                        <th style="padding: 10px; border-bottom: 1px solid #334155;">成局得分(有身價)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 10px;">我有/敵無</td>
+                        <td>倒 2 (-2)</td>
+                        <td class="highlight">-500</td>
+                        <td>400 ~ 420</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px;">平身價</td>
+                        <td>倒 3 (-3)</td>
+                        <td class="highlight">-500</td>
+                        <td>可能 400+</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px;">我無/敵有</td>
+                        <td>倒 4 (-4)</td>
+                        <td class="highlight">-700</td>
+                        <td>600 或更高</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size: 0.85rem; margin-top: 15px; text-align: center;">※但我們大部分都會買同伴幫忙補一副</p>
+            <p style="font-size: 0.85rem; margin-top: 15px; text-align: center;">因此只有最差情況才會:處罰失分 > 對手成局分。</p>
+        </div>
+    </div>
+</div>
+
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>弱二開叫後續：奧古斯都 (Ogust)</h2>
+        <p>當同伴「弱二開叫」(2♦/2♥/2♠) 展示 0-10 點時，答叫者若有 14+ 點，可用 <span class="highlight">2NT</span> 發動奧古斯都特約。</p>
+        
+        <div class="info-box">
+            <h3>同伴的回應邏輯 (3♣/3♦/3♥/3♠/3NT)</h3>
+            
+            <div class="info-grid">
+                <div class="info-box" style="border-top-width: 2px;">
+                    <p><span class="badge">3♣</span> <b>不好、不好</b></p>
+                    <p><small>(Min 點力(0~7), 爛牌質)</small></p>
+                </div>
+                <div class="info-box" style="border-top-width: 2px;">
+                    <p><span class="badge">3♦</span> <b>好、不好</b></p>
+                    <p><small>(Max 點力(8~10), 爛牌質)</small></p>
+                </div>
+                <div class="info-box" style="border-top-width: 2px;">
+                    <p><span class="badge">3♥</span> <b>不好、好</b></p>
+                    <p><small>(Min 點力(0~7), 好牌質)</small></p>
+                </div>
+                <div class="info-box" style="border-top-width: 2px;">
+                    <p><span class="badge">3♠</span> <b>好、好</b></p>
+                    <p><small>(Max 點力(8~10), 好牌質)</small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="rule-card" style="border-left-color: var(--accent);">
+            <h3>定義說明：</h3>
+            <ul>
+                <li><span class="highlight">點力：</span> 不好 (0-7點) / 好 (8-10點)。</li>
+                <li><span class="highlight">牌質：</span> 指王牌長門質量。好 = 擁有兩張大牌 (A/K/Q)；不好 = 僅有一張或更少。</li>
+                <li><span class="highlight">3NT：</span> 頂級牌 (AKQxxx)。</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>贏墩估算</h2>
+        <p>「預期贏墩」決定要叫到幾線、是否要犧牲叫。</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>如何數「確定贏墩」？</h3>
+                <table style="width: 100%; color: var(--text-dim); border-collapse: collapse; margin-top: 10px;">
+                    <tr style="border-bottom: 1px solid #334155;">
+                        <th style="text-align: left; padding: 5px;">持牌狀況</th>
+                        <th style="text-align: center; padding: 5px;">預估贏墩</th>
+                    </tr>
+                    <tr><td>A K Q xxx</td><td style="text-align: center;" class="highlight">6 墩</td></tr>
+                    <tr><td>A K x xxx</td><td style="text-align: center;" class="highlight">5 墩</td></tr>
+                    <tr><td>A Q x xxx</td><td style="text-align: center;" class="highlight">4.5 墩*</td></tr>
+                    <tr><td>K Q J xxx</td><td style="text-align: center;" class="highlight">5 墩</td></tr>
+                    <tr><td>AK xxxxx</td><td style="text-align: center;" class="highlight">7 墩(why)</td></tr>
+                    <tr><td>長門第 4 張以後</td><td style="text-align: center;" class="highlight">每張 1 墩</td></tr>
+                </table>
+                <p><small>* 1.5 墩代表：A 是確定的 1 墩，Q 飛過就有 2 墩，沒過就只有 1 墩。</small></p>
+            </div>
+
+            <div class="info-box" style="border-top-color: #3b82f6;">
+                <h3>外面王牌分配機率</h3>
+                <p>當你們這對手持有 8 張王牌，外面還有 5 張時：</p>
+                <div class="rule-card" style="background: rgba(59, 130, 246, 0.1); text-align: center;">
+                    <p><b>3 - 2 分配：<span class="highlight">68%</span></b> (最常見)</p>
+                    <p>4 - 1 分配：<span style="color: #f87171;">28%</span></p>
+                    <p>5 - 0 分配：<span style="color: #f87171;">4%</span></p>
+                </div>
+                <p><small>※ 策略：通常預設外面是 3-2 分配，也就是拔兩輪王牌後對手就沒了。</small></p>
+            </div>
+        </div>
+
+        <div class="rule-card" style="margin-top: 30px; border-left: 6px solid #fac400;">
+            <h3>飛牌的基本道理</h3>
+            <p>飛牌就是利用「出牌順序」，讓對手夾在中間的大牌失效。</p>
+            <div class="info-grid">
+                <div class="info-box" style="background: rgba(250, 196, 0, 0.05);">
+                    <p><b>場景：</b>夢家(北)有 <span class="highlight">A Q</span>，莊家(南)出小牌。</p>
+                    <p><b>邏輯：</b></p>
+                    <ol>
+                        <li>若西家有 <span style="color: #f87171;">K</span>，他出小，你用 <span class="highlight">Q</span> 贏墩。</li>
+                        <li>若西家出 <span style="color: #f87171;">K</span>，你用 <span class="highlight">A</span> 蓋吃。</li>
+                    </ol>
+                    <p>無論如何，只要 <span style="color: #f87171;">K</span> 在西家（機率 50%），你就能吃到 2 墩。</p>
+                </div>
+                <div class="info-box">
+                    <p><b>黃金準則：</b></p>
+                    <p class="highlight">從弱端出牌，向大牌飛過去。</p>
+                    <p><small>絕對不要直接從大牌端出牌，那會讓對手輕易蓋掉你的大牌。</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tab-3" class="tab-content">
+    <div class="theory-layout">
+        <h2>竄叫禁止事項</h2>
+        <p>竄叫是為了干擾對手，但如果亂竄，反而會把自己送入火坑。以下是 <span class="highlight">竄叫</span> 的三大禁忌：</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>1. 持有 4 張高花時，不要竄!</h3>
+                <p>如果你打算在 2 線或 3 線竄叫（如開叫 2♦/3♣），但手上有另外一門 <span class="highlight">4 張的高花</span>：</p>
+                <div class="rule-card" style="background: rgba(239, 68, 68, 0.05); padding: 10px; border-radius: 8px;">
+                    <p><b>理由：</b> 你們可能有一門高花配合的 4-4 點力合約。如果你先竄叫了，同伴很難再幫你找回這門高花。</p>
+                </div>
+                <p><small>※ 策略：寧可 Pass 尋求後續機會，也不要封死高花的可能性。</small></p>
+            </div>
+
+            <div class="info-box" style="border-top-color: #f59e0b;">
+                <h3>2. 第二家與第四家，不要亂竄！</h3>
+                <p>當你是第二家（右手邊 Pass）或第四家（三家都 Pass）時：</p>
+                <ul>
+                    <li><span class="highlight">第二家：</span> 上一家Pass，你同伴拿點的機率就變高了，更容易塞到同伴。</li>
+                    <li><span class="highlight">第四家：</span> 三家都 Pass 了，代表點力平均。如果你開叫弱二，這是沒有意義的。</li>
+                </ul>
+                <div class="rule-card" style="background: rgba(245, 158, 11, 0.05); padding: 10px; border-radius: 8px;">
+                    <p><b>格言：</b> 第四家沒有所謂的「竄叫」，若要叫牌，通常代表你希望成局。</p>
+                </div>
+            </div>
+
+            <div class="info-box" style="border-top-color: #6366f1;">
+                <h3>3. 手上有兩張 A 時，不要竄！</h3>
+                <p>雖然你的點力可能在 0-10 點，但如果裡面包含了 <span class="highlight">兩張 A</span>：</p>
+                <div class="rule-card" style="background: rgba(99, 102, 241, 0.05); padding: 10px; border-radius: 8px;">
+                    <p><b>理由：</b> A 是最好的防守贏墩。弱二開叫的目的是「犧牲」，但手握兩隻 A 代表你在防守端很有貢獻，不應該進行自殺式的犧牲叫。</p>
+                </div>
+                <p><small>※ 記住：竄叫的牌應該是「旁門無防守價值」的牌。</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

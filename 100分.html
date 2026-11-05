@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 系統基本概念</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 1♣ - 1♥ 後續</button>
+    <button class="tab-btn" onclick="showTab(2)">3. 1♣ - 1♠ 後續</button>
+</nav>
+
+<!-- Tab 0: 系統基本概念 -->
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>100 系統：滿貫試探架構</h2>
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>基礎定義</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">1m - 1M - 4m/4M</span> = 4張M配合, 6+張長m, 點力 16~18 或 19~21</li>
+                    <li><span class="badge">1m - 1M - 跳叫 oM</span> = 4張M配合, 點力 16~18 (缺門) 或 19~21 (單缺)</li>
+                    <li><span class="badge">1m - 1M - 4om/4oM</span> = 4張M配合, 該門單張, 16~18點 (限定牌型 SPL)</li>
+                </ul>
+            </div>
+            <div class="info-box" style="border-top-color: #4ade80;">
+                <h3>邀請與試探</h3>
+                <p>若我方已有配合且僅有 12~15 點，使用 <span class="highlight">1m - 1M - 3M</span> 進行邀請。</p>
+                <p><small>※ 針對跳叫 oM 的情況，因未指明哪一門短，同伴需額外進行詢問。</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 1: 1♣ - 1♥ 後續 -->
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>1♣ - 1♥ 進階後續</h2>
+        <div class="rule-card" style="border-left-color: var(--accent); padding: 20px;">
+            <div class="info-grid">
+                <div class="info-box">
+                    <h3>16-18 點區間</h3>
+                    <p><span class="badge">4D / 3S</span> = 1張 方塊/黑桃</p>
+                    <p><span class="badge">3H / 3S</span> = 0張 方塊/黑桃</p>
+                </div>
+                <div class="info-box">
+                    <h3>19-21 點區間 (透過詢問)</h3>
+                    <p><span class="badge">2S! - 2N!</span> = 轉向詢問</p>
+                    <p><span class="badge">3C / 3D</span> = 1張 方塊/黑桃</p>
+                    <p><span class="badge">3N / 4C</span> = 0張 方塊/黑桃</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 2: 1♣ - 1♠ 後續 -->
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>1♣ - 1♠ 進階後續</h2>
+        <div class="rule-card" style="border-left-color: #ef4444; padding: 20px;">
+            <div class="info-grid">
+                <div class="info-box">
+                    <h3>16-18 點區間</h3>
+                    <p><span class="badge">4D / 4H</span> = 1張 方塊/紅心</p>
+                    <p><span class="badge">4D / 4H</span> = 0張 方塊/紅心</p>
+                </div>
+                <div class="info-box">
+                    <h3>19-21 點區間 (透過詢問)</h3>
+                    <p><span class="badge">3H! - 3S!</span> = 轉向詢問</p>
+                    <p><span class="badge">3N / 4C</span> = 1張 方塊/紅心</p>
+                    <p><span class="badge">4S / 4N</span> = 0張 方塊/紅心</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

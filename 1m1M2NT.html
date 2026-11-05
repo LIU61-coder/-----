@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/theory.css">
+    <style>
+        :root {
+            --accent: #fac400;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<div id="table"></div>
+
+<div class="top-nav-extra">
+    <a href="teach.html" class="btn-back-lobby">← 回到教學</a>
+</div>
+
+<nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab(0)">1. 基本概念</button>
+    <button class="tab-btn" onclick="showTab(1)">2. 答叫者再叫 (3C!)</button>
+    <button class="tab-btn" onclick="showTab(2)">3. 開叫者回應 (CB)</button>
+</nav>
+
+<!-- Tab 0: 基本概念 -->
+<div id="tab-0" class="tab-content active">
+    <div class="theory-layout">
+        <h2>Checkback Stayman (CB Stayman)</h2>
+        <p>當叫序為 <span class="highlight">1m – 1M; 2NT</span> 時：</p>
+        
+        <div class="info-grid">
+            <div class="info-box" style="border-top-color: var(--accent);">
+                <h3>開叫者 2NT 的定義</h3>
+                <p>開叫者叫 2NT 表示：</p>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li>1. 對答叫者的 M <span class="highlight">沒有配合</span></li>
+                    <li>2. 但並未否定有四張另一門高花 (oM)</li>
+                    <li>3. 牌力為 <span class="highlight">18-19 點</span>，平均 (BAL)</li>
+                </ul>
+            </div>
+            
+            <div class="info-box" style="border-top-color: #ef4444;">
+                <h3>想一想?</h3>
+                <p><strong>問：</strong> 1m – 1H 後，若我方持有 4張♠、18-19點、均型牌，應該叫 2NT 還是 1S？</p>
+                <p class="highlight">答：應叫 2NT (透過後續的 CB Stayman 來尋找配合)。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 1: 答叫者再叫 -->
+<div id="tab-1" class="tab-content">
+    <div class="theory-layout">
+        <h2>Stayman:詢問同伴牌型</h2>
+        <p>使用 <span class="badge">3♣!</span> 作為詢問手段，後續發展如下：</p>
+
+        <div class="info-grid">
+            <div class="info-box">
+                <h3>若叫序為 1m – 1H; 2N – 3C!</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">3C</span> = 5張H，詢問開叫者是否有 3H 或 4S</li>
+                    <li><span class="badge">3D!</span> = 配合 m，滿貫試探 (ST)</li>
+                    <li><span class="badge">3H</span> = 6+張H，滿貫試探 (ST)</li>
+                    <li><span class="badge">3S</span> = 4-4 高花牌型</li>
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3>若叫序為 1m – 1S; 2N – 3C!</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    <li><span class="badge">3C</span> = 5張S，詢問開叫者是否有 3S 或 4H</li>
+                    <li><span class="badge">3D!</span> = 配合 m，滿貫試探 (ST)</li>
+                    <li><span class="badge">3H</span> = 5-5 高花牌型</li>
+                    <li><span class="badge">3S</span> = 6+張S，滿貫試探 (ST)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tab 2: 開叫者回應 -->
+<div id="tab-2" class="tab-content">
+    <div class="theory-layout">
+        <h2>Stayman：開叫者回應</h2>
+        <p>在答叫者發動 <span class="badge">3♣!</span> 詢問後，開叫者的答叫：</p>
+
+        <div class="rule-card" style="border-left-color: var(--accent); background: rgba(250, 196, 0, 0.05); padding: 20px; border-radius: 12px;">
+            <div class="info-grid">
+                <div class="info-box">
+                    <p><span class="badge">3D!</span> = 兩者皆有 (有 3張M 且有 4張oM)</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="badge">3M</span> = 僅有 3張M 配合</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="badge">3oM</span> = 僅有 4張oM 配合</p>
+                </div>
+                <div class="info-box">
+                    <p><span class="badge">3NT</span> = 兩者皆無 (無 3張M 配合，亦無 4張oM)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/theory.js"></script>
+</body>
+</html>

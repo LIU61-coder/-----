@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/test.css">
+    <style>
+        :root {
+            --green-bg: linear-gradient(180deg, #028345 0%, #68b04d 100%);
+            --blue-bg: linear-gradient(180deg, #0c2b8a 0%, #3e52b8 100%);
+            --yellow-bg: linear-gradient(180deg, #fac400 0%, #fac400 100%);
+            --red-bg : linear-gradient(180deg, #b01a1a 0%, #e84c3d 100%);
+        }
+
+        body {
+            background-color: #1a472a;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: "Arial Black", "Microsoft JhengHei", sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div id="custom-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h2>自訂牌型與點力</h2>
+        <p class="modal-subtitle">勾選方位後，填寫欲指定的欄位（未填寫者將由系統自動計算與配牌）。</p>
+
+        <div class="custom-grid">
+            <!-- 北 (NORTH) -->
+            <div class="seat-card" id="card-north">
+                <div class="seat-title">
+                    北 (NORTH)
+                    <label class="seat-toggle">
+                        <input type="checkbox" id="north-enable" checked onchange="toggleSeatInputs('north')"> 自訂
+                    </label>
+                </div>
+                <div class="input-row"><label>HCP 點力:</label><input type="number" id="north-hcp" min="0" max="37" placeholder="自動"></div>
+                <div class="input-row"><label>♠ 黑桃:</label><input type="number" id="north-spade" min="0" max="13" placeholder="自動"></div>
+                <div class="input-row"><label>♥ 紅心:</label><input type="number" id="north-heart" min="0" max="13" placeholder="自動"></div>
+                <div class="input-row"><label>♦ 方塊:</label><input type="number" id="north-diamond" min="0" max="13" placeholder="自動"></div>
+                <div class="input-row"><label>♣ 梅花:</label><input type="number" id="north-club" min="0" max="13" placeholder="自動"></div>
+            </div>
+
+            <!-- 南 (SOUTH) -->
+            <div class="seat-card" id="card-south">
+                <div class="seat-title">
+                    南 (SOUTH)
+                    <label class="seat-toggle">
+                        <input type="checkbox" id="south-enable" checked onchange="toggleSeatInputs('south')"> 自訂
+                    </label>
+                </div>
+                <div class="input-row"><label>HCP 點力:</label><input type="number" id="south-hcp" min="0" max="37" placeholder="自動"></div>
+                <div class="input-row"><label>♠ 黑桃:</label><input type="number" id="south-spade" min="0" max="13" placeholder="自動"></div>
+                <div class="input-row"><label>♥ 紅心:</label><input type="number" id="south-heart" min="0" max="13" placeholder="自動"></div>
+                <div class="input-row"><label>♦ 方塊:</label><input type="number" id="south-diamond" min="0" max="13" placeholder="自動"></div>
+                <div class="input-row"><label>♣ 梅花:</label><input type="number" id="south-club" min="0" max="13" placeholder="自動"></div>
+            </div>
+
+            <!-- 東 (EAST) -->
+            <div class="seat-card" id="card-east">
+                <div class="seat-title">
+                    東 (EAST)
+                    <label class="seat-toggle">
+                        <input type="checkbox" id="east-enable" checked onchange="toggleSeatInputs('east')"> 自訂
+                    </label>
+                </div>
+                <div class="input-row"><label>HCP 點力:</label><input type="number" id="east-hcp" min="0" max="37" placeholder="自動"></div>
+                <div class="input-row"><label>♠ 黑桃:</label><input type="number" id="east-spade" min="0" max="13" placeholder="自動"></div>
+                <div class="input-row"><label>♥ 紅心:</label><input type="number" id="east-heart" min="0" max="13" placeholder="自動"></div>
+                <div class="input-row"><label>♦ 方塊:</label><input type="number" id="east-diamond" min="0" max="13" placeholder="自動"></div>
+                <div class="input-row"><label>♣ 梅花:</label><input type="number" id="east-club" min="0" max="13" placeholder="自動"></div>
+            </div>
+
+            <!-- 西 (WEST) -->
+            <div class="seat-card" id="card-west">
+                <div class="seat-title">
+                    西 (WEST)
+                    <label class="seat-toggle">
+                        <input type="checkbox" id="west-enable" checked onchange="toggleSeatInputs('west')"> 自訂
+                    </label>
+                </div>
+                <div class="input-row"><label>HCP 點力:</label><input type="number" id="west-hcp" min="0" max="37" placeholder="自動"></div>
+                <div class="input-row"><label>♠ 黑桃:</label><input type="number" id="west-spade" min="0" max="13" placeholder="自動"></div>
+                <div class="input-row"><label>♥ 紅心:</label><input type="number" id="west-heart" min="0" max="13" placeholder="自動"></div>
+                <div class="input-row"><label>♦ 方塊:</label><input type="number" id="west-diamond" min="0" max="13" placeholder="自動"></div>
+                <div class="input-row"><label>♣ 梅花:</label><input type="number" id="west-club" min="0" max="13" placeholder="自動"></div>
+            </div>
+        </div>
+
+        <div id="custom-error" class="error-msg"></div>
+
+        <div class="modal-actions">
+            <button class="submit-btn" style="background: #2ecc71;" onclick="generateCustomDeal()">持續生成 (Generate)</button>
+            <button class="reset-btn" onclick="closeCustomModal()">關閉 (Close)</button>
+        </div>
+    </div>
+</div>
+    <div class="matrix-panel">
+        <h2>Advance 策略矩陣</h2>
+        <p style="font-size: 12px; color: #aaa; text-align: center;">點選方位，勾選卡牌</p>
+        
+        <div id="matrix-container"></div>
+        
+        <div class="btn-group">
+            <button class="submit-btn" style="background: #00cec9; color: #111;" onclick="copyHandData()">📋 複製手牌 (Copy JSON)</button>
+            <button class="submit-btn" style="background: #e67e22;" onclick="openCustomModal()">自訂發牌 (Custom Deal)</button>
+            <button class="submit-btn" style="background: #6c5ce7;" onclick="randomDeal()">隨機發牌 (Random)</button>
+            <button class="submit-btn" onclick="submitHandData()">確認手牌並前往叫牌</button>
+            <button class="reset-btn" onclick="location.reload()">重設</button>
+            <button class="submit-btn" style="background: #2d98da;" onclick="location.href='lobby.html'">回到大廳</button>
+        </div>
+    </div>
+
+    <div id="game-table">
+        <div class="pos-indicator north" id="north-box" onclick="setTarget('north')">
+            <span>北 (NORTH)</span>
+            <div class="hand-area" id="north-hand"></div>
+        </div>
+        <div class="pos-indicator west" id="west-box" onclick="setTarget('west')">
+            <span>西 (WEST)</span>
+            <div class="hand-area" id="west-hand"></div>
+        </div>
+        <div class="pos-indicator east" id="east-box" onclick="setTarget('east')">
+            <span>東 (EAST)</span>
+            <div class="hand-area" id="east-hand"></div>
+        </div>
+        <div class="pos-indicator south current-target" id="south-box" onclick="setTarget('south')">
+            <span>南 (SOUTH)</span>
+            <div class="hand-area" id="south-hand"></div>
+        </div>
+    </div>
+
+    <script src="js/cardinput.js"></script>
+</body>
+</html>

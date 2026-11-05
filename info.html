@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交大橋藝社</title>
+    <link rel="stylesheet" href="css/info.css">
+    <style>
+        :root {
+            --dark-bg: #0f172a;
+            --accent: #fac400;
+            --glass: rgba(255, 255, 255, 0.05);
+            --card-hover: rgba(250, 196, 0, 0.1);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            height: 100vh;
+            background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)),
+                        url('https://upload.wikimedia.org/wikipedia/zh/thumb/8/8e/NYCU_logo.svg/960px-NYCU_logo.svg.png'); /* 預設背景圖 */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 class="title">交大橋藝社</h1>
+        <p class="subtitle">打牌靠賽，輕鬆自在</p>
+        <a href="teach.html" class="cta-btn">開始練牌</a>
+    </header>
+
+    <div class="section">
+        <div style="text-align: center;">
+            <h2 class="section-title">為什麼選擇來橋藝社？</h2>
+        </div>
+        <div class="features">
+            <div class="feature-card">
+                <h3>與朋友同樂</h3>
+                <p>找到志同道合的人一起打牌。</p>
+            </div>
+            <div class="feature-card">
+                <h3>邏輯思維訓練</h3>
+                <p>橋牌不只是運氣，更是機率、推理與心理戰的結合。訓練你在壓力下做出正確決策。</p>
+            </div>
+            <div class="feature-card">
+                <h3>梅竹賽傳承</h3>
+                <p>交大橋牌社超強的啦，想當梅竹英雄就來交大橋藝社。</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" style="background: rgba(0,0,0,0.2); max-width: 100%;">
+        <div style="text-align: center;">
+            <h2 class="section-title">社團生活紀錄</h2>
+        </div>
+        <div class="gallery">
+            <div class="photo-item"><img src="data/picture/info/梅竹win.jpg" alt="梅竹獲勝"></div>
+            <div class="photo-item"><img src="data/picture/info/大專杯win.jpg" alt="比賽獲獎"></div>
+            <div class="photo-item"><img src="data/picture/info/社課日常.jpg" alt="社課日常"></div>
+            <div class="photo-item"><img src="data/picture/info/慶功吃吃.jpg" alt="慶功宴"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>交大橋藝社 &copy; 2025</p>
+        <p style="font-size: 0.8rem; color: #666;">加入社團 | 好玩好玩</p>
+    </footer>
+
+</body>
+</html>
